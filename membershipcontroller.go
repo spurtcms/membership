@@ -2,7 +2,24 @@ package membership
 
 import (
 	"time"
+
+	"github.com/spurtcms/membership/migration"
 )
+
+// MemberSetup used initialize member configruation
+func MembershipSetup(config Config) *Membership {
+
+	migration.AutoMigration(config.DB, config.DataBaseType)
+
+	return &Membership{
+		AuthEnable:       config.AuthEnable,
+		Permissions:      config.Permissions,
+		PermissionEnable: config.PermissionEnable,
+		Auth:             config.Auth,
+		DB:               config.DB,
+	}
+
+}
 
 // func (memsership *Membership) MembershipGroupList() []TblMstrMembergrouplevel {
 
@@ -63,13 +80,32 @@ import (
 // 	Membershipmodel.DeleteMembershipgroup(Groupupdate, Membership.DB)
 // }
 
-func (Membership *Membership) MembershipLevelsList() []TblMstrMembershiplevel {
+func (Membership *Membership) MembershipLevelsList(tenantid int) []TblMstrMembershiplevel {
 
 	var subscriptionlist []TblMstrMembershiplevel
 
-	Membershipmodel.GetMembershipLevel(&subscriptionlist, Membership.DB)
+	Membershipmodel.GetMembershipLevel(&subscriptionlist, tenantid, Membership.DB)
 
 	return subscriptionlist
+
+}
+
+func (Membership *Membership) GetdefaultMembershiplevelTemplate() []TblMstrMembershiplevel {
+
+	var DefaultMembershipLevelList []TblMstrMembershiplevel
+
+	Membershipmodel.GetdefaultTemplate(&DefaultMembershipLevelList, Membership.DB)
+
+	return DefaultMembershipLevelList
+
+}
+func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) []TblMstrMembershiplevel {
+
+	var SelectedMembershipData []TblMstrMembershiplevel
+
+	Membershipmodel.GetMembershiplevelDetails(&SelectedMembershipData, membershiplevelId, Membership.DB)
+
+	return SelectedMembershipData
 
 }
 

@@ -3,7 +3,9 @@ package membership
 import (
 	"strings"
 	"time"
+
 )
+
 
 func (memsership *Membership) MembershipGroupList() []TblMstrMembergrouplevel {
 
@@ -50,4 +52,16 @@ func (membership *Membership) MembershipGrupUpdate(namae string, desc string, is
 
 	Membershipmodel.UpdatemembershipGroup(Groupupdate, tenantid, membership.DB)
 
+}
+
+func (Membership *Membership) MembershipGroupDelete(id int, userid int, tenantid int) {
+	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	Groupupdate := TblMstrMembergrouplevel{
+		Id:        id,
+		DeletedOn: t,
+		DeletedBy: userid,
+		TenantId:  tenantid,
+	}
+	Membershipmodel.DeleteMembershipgroup(Groupupdate, Membership.DB)
 }
