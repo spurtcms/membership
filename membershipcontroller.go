@@ -109,6 +109,16 @@ func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) []Tb
 
 }
 
+func (Membership *Membership) MembershiplevelEdit(membershipid int) TblMstrMembershiplevel {
+
+	var Editmembership TblMstrMembershiplevel
+
+	Membershipmodel.Editmembershiplevel(&Editmembership, membershipid, Membership.DB)
+
+	return Editmembership
+
+}
+
 func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid int) {
 
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))

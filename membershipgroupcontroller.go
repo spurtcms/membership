@@ -3,9 +3,7 @@ package membership
 import (
 	"strings"
 	"time"
-
 )
-
 
 func (memsership *Membership) MembershipGroupList() []TblMstrMembergrouplevel {
 
@@ -32,6 +30,16 @@ func (membership *Membership) MembershipGroupLevelCreate(namae string, desc stri
 	}
 
 	Membershipmodel.CreateMembershipGrouplevel(groupdata, membership.DB)
+
+}
+
+func (membership *Membership) MembershipGroupLevelEdit(MembershipGroupId int) TblMstrMembergrouplevel{
+
+	var MembershipGroupLevelEdit TblMstrMembergrouplevel
+
+	Membershipmodel.EditMembershipGroupLevel(&MembershipGroupLevelEdit, MembershipGroupId, membership.DB)
+
+	return MembershipGroupLevelEdit
 
 }
 
