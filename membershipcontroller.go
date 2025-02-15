@@ -1,6 +1,7 @@
 package membership
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/spurtcms/membership/migration"
@@ -80,13 +81,15 @@ func MembershipSetup(config Config) *Membership {
 // 	Membershipmodel.DeleteMembershipgroup(Groupupdate, Membership.DB)
 // }
 
-func (Membership *Membership) MembershipLevelsList(tenantid int) []TblMstrMembershiplevel {
+func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64) {
 
 	var subscriptionlist []TblMstrMembershiplevel
 
-	Membershipmodel.GetMembershipLevel(&subscriptionlist, tenantid, Membership.DB)
+	Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
 
-	return subscriptionlist
+	TotalMemebrshipCount, _ := Membershipmodel.GetMembershipLevel(0, 0, filter, &subscriptionlist, tenantid, Membership.DB)
+
+	return subscriptionlist, TotalMemebrshipCount
 
 }
 
@@ -145,6 +148,7 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 }
 
 func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid int) {
+	fmt.Println("")
 
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 

@@ -6,6 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type Filter struct {
+	Keyword       string
+	Category      string
+	Status        string
+	FromDate      string
+	ToDate        string
+	FirstName     string
+	MemberProfile bool
+}
+
 type TblMstrMembershiplevel struct {
 	Id                    int       `gorm:"primaryKey;auto_increment;type:serial"`
 	SubscriptionName      string    `gorm:"type:character varying"`
@@ -122,11 +132,35 @@ func (membershipmodel MembershipModel) CreateSubscriptionLevel(subscriptions Tbl
 	return nil
 }
 
-func (membershipmodel MembershipModel) GetMembershipLevel(sublist *[]TblMstrMembershiplevel, tenant_id int, DB *gorm.DB) error {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where("tenant_id=? and is_deleted=0", tenant_id).Find(&sublist).Error; err != nil {
-		return err
+func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int, filter Filter, sublist *[]TblMstrMembershiplevel, tenant_id int, DB *gorm.DB) (Total_MembershipLevel int64, err error) {
+
+	query := DB.Table("tbl_mstr_membershiplevels").Where("tenant_id=? and is_deleted=0", tenant_id)
+
+	if limit != 0 {
+
+		query = query.Offset(offset).Limit(limit).Order("id desc")
+
+		query.Find(&sublist)
+
+		return Total_MembershipLevel, nil
+
 	}
-	return nil
+
+	if filter.Keyword != "" {
+
+		query = query.Where("LOWER(TRIM(subscription_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%")
+
+		query.Find(&sublist)
+
+		return Total_MembershipLevel, nil
+	}
+
+	// query.Find(&sublist)	fmt.Println("filtr::",filter.Keyword)
+
+
+	query.Count(&Total_MembershipLevel)
+
+	return Total_MembershipLevel, nil
 }
 
 func (membershipmodel MembershipModel) GetdefaultTemplate(Defaultlist *[]TblMstrMembershiplevel, DB *gorm.DB) error {
