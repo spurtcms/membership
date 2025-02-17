@@ -1,6 +1,10 @@
 package membership
 
-import "errors"
+import (
+	"errors"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 var (
 	ErrorAuth       = errors.New("auth enabled not initialised")
@@ -22,4 +26,18 @@ func AuthandPermission(membership *Membership) error {
 	}
 
 	return nil
+}
+
+// function to hash the secret passwords
+func hashingPassword(pass string) string {
+
+	passbyte, err := bcrypt.GenerateFromPassword([]byte(pass), 14)
+
+	if err != nil {
+
+		panic(err)
+
+	}
+
+	return string(passbyte)
 }

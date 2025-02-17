@@ -6,7 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type TblMembershipOrder struct {
 	Id                        int       `gorm:"primaryKey;auto_increment;type:serial"`
 	UserId                    int       `gorm:"type:integer"`
@@ -64,4 +63,36 @@ func (Membershipmodel MembershipModel) CreateMemberShipOrder(order TblMembership
 
 	return nil
 
+}
+
+func (Membershipmodel MembershipModel) Editorder(id, tenantid int, DB *gorm.DB) (orderlist TblMembershipOrder, err error) {
+
+	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=? and is_deleted=0", id, tenantid).First(&orderlist).Error; err != nil {
+
+		return TblMembershipOrder{}, err
+	}
+
+	return orderlist, nil
+
+}
+
+func (Membershipmodel MembershipModel) UpdateOrder(order TblMembershipOrder, id, tenantid int, DB *gorm.DB) error {
+
+	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=? and is_deleted=0", id, tenantid).UpdateColumns(map[string]interface{}{"user_id": order.UserId, "membershiplevel_id": order.MembershiplevelId, "billing_name": order.BillingName, "billing_street": order.BillingStreet, "billing_street2": order.BillingStreet2, "billing_city": order.BillingCity, "billing_state": order.BillingState, "billing_postalcode": order.BillingPostalcode, "billing_country": order.BillingCountry, "billing_phone": order.BillingPhone, "sub_total": order.SubTotal, "tax": order.Tax, "total": order.Total, "payment_type": order.PaymentType, "status": order.Status, "gateway": order.Gateway, "gateway_environment": order.GatewayEnvironment, "paymenttransaction_id": order.PaymenttransactionId, "subscriptiontransaction_id": order.SubscriptiontransactionId, "modified_on": order.ModifiedOn, "modified_by": order.ModifiedBy}).Error; err != nil {
+
+		return err
+	}
+
+	return nil
+
+}
+
+func (Membershipmodel MembershipModel) DeleteOrder(id, tenantid,deletedby int,deletedon time.Time, DB *gorm.DB) error {
+
+	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=?", id, tenantid).UpdateColumns(map[string]interface{}{"is_deleted": 1,"deleted_by":deletedby,"deleted_on":deletedon}).Error; err != nil {
+
+		return err
+	}
+
+	return nil
 }
