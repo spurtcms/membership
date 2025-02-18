@@ -6,12 +6,16 @@ import (
 	"time"
 )
 
-func (memsership *Membership) MembershipGroupList() []TblMstrMembergrouplevel {
+func (memsership *Membership) MembershipGroupList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembergrouplevel, int64) {
 	fmt.Println("")
 
-	list, _ := Membershipmodel.GetMembershipGroup(memsership.DB)
+	var Subscriptiongroup []TblMstrMembergrouplevel
 
-	return list
+	Membershipmodel.GetMembershipGroup(&Subscriptiongroup, offset, limt, filter, tenantid, memsership.DB)
+
+	totalgroup, _ := Membershipmodel.GetMembershipGroup(&Subscriptiongroup, 0, 0, filter, tenantid, memsership.DB)
+
+	return Subscriptiongroup, totalgroup
 
 }
 

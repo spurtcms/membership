@@ -42,7 +42,16 @@ func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, fi
 
 	var orderlistcount int64
 
-	query := DB.Table("tbl_membership_orders").Where("is_deleted = 0 and  tenant_id = ?", tenantid).Order("tbl_membership_orders.created_on desc")
+	query := DB.Table("tbl_membership_orders").Where("is_deleted = 0 and  tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
+
+
+	if limit != 0 {
+
+		query.Limit(limit).Offset(offset).Find(&orderlist)
+
+		return orderlist, orderlistcount, nil
+
+	}
 
 	query.Find(&orderlist).Count(&orderlistcount)
 	if query.Error != nil {
@@ -87,12 +96,23 @@ func (Membershipmodel MembershipModel) UpdateOrder(order TblMembershipOrder, id,
 
 }
 
-func (Membershipmodel MembershipModel) DeleteOrder(id, tenantid,deletedby int,deletedon time.Time, DB *gorm.DB) error {
+func (Membershipmodel MembershipModel) DeleteOrder(id, tenantid, deletedby int, deletedon time.Time, DB *gorm.DB) error {
 
-	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=?", id, tenantid).UpdateColumns(map[string]interface{}{"is_deleted": 1,"deleted_by":deletedby,"deleted_on":deletedon}).Error; err != nil {
+	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=?", id, tenantid).UpdateColumns(map[string]interface{}{"is_deleted": 1, "deleted_by": deletedby, "deleted_on": deletedon}).Error; err != nil {
 
 		return err
 	}
 
 	return nil
+}
+
+func (Membershipmodel MembershipModel) MultiSelectOrderDelete(order *TblMembershipOrder, id []int, DB *gorm.DB) error {
+
+	if err := DB.Table("tbl_membership_orders").Where("id in (?) and tenant_id=?", id, order.TenantId).UpdateColumns(map[string]interface{}{"is_deleted": order.IsDeleted, "deleted_on": order.DeletedOn, "deleted_by": order.DeletedBy}).Error; err != nil {
+
+		return err
+	}
+
+	return nil
+
 }

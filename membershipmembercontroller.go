@@ -5,14 +5,17 @@ import (
 	"time"
 )
 
-func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int) []TblMembershipMembers {
+func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int)( []TblMembershipMembers , int64) {
 
 	var MembershipMemberList []TblMembershipMembers
 
-	err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB)
+	_,err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB,offset , limt ,filter, flag , TenantId )
+
+	Totalmembercount,err:= Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB,0, 0 ,filter, flag , TenantId )
+
 	fmt.Println("err", err)
 
-	return MembershipMemberList
+	return MembershipMemberList,Totalmembercount
 }
 
 func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember TblMembershipMembers) {

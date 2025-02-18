@@ -12,7 +12,9 @@ func (membership *Membership) OrderList(limit, offset int, filter Filter, tenant
 		return []TblMembershipOrder{}, 0, Autherr
 	}
 
-	orderlist, count, err := Membershipmodel.MemberShipOrderList(limit, offset, filter, tenantid, membership.DB)
+	orderlist, _, _ := Membershipmodel.MemberShipOrderList(limit, offset, filter, tenantid, membership.DB)
+
+	_, count, err := Membershipmodel.MemberShipOrderList(0, 0, filter, tenantid, membership.DB)
 	if err != nil {
 
 		return []TblMembershipOrder{}, 0, err
@@ -128,18 +130,18 @@ func (membership *Membership) UpdateMembershipOrder(orders TblMembershipOrder, i
 
 }
 
-func (membership *Membership) DeleteMembershipOrder(id,userid, tenantid int) error {
+func (membership *Membership) DeleteMembershipOrder(id, userid, tenantid int) error {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
 		return Autherr
 	}
 
-	deletedon,_:=time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
-	deletedby:=userid
+	deletedby := userid
 
-	err := Membershipmodel.DeleteOrder(id, tenantid,deletedby,deletedon,membership.DB)
+	err := Membershipmodel.DeleteOrder(id, tenantid, deletedby, deletedon, membership.DB)
 
 	if err != nil {
 
@@ -148,4 +150,30 @@ func (membership *Membership) DeleteMembershipOrder(id,userid, tenantid int) err
 
 	return nil
 
+}
+
+func (membership *Membership) MultiSelectDeleteOrder(orderids []int, modifiedby int, tenantid int) error {
+
+	if Autherr := AuthandPermission(membership); Autherr != nil {
+
+		return Autherr
+	}
+
+	var Order TblMembershipOrder
+
+	Order.DeletedBy = modifiedby
+
+	Order.DeletedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	Order.IsDeleted = 1
+
+	Order.TenantId = tenantid
+
+	err := Membershipmodel.MultiSelectOrderDelete(&Order, orderids, membership.DB)
+	if err != nil {
+
+		return err
+
+	}
+	return nil
 }

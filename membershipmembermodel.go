@@ -44,12 +44,38 @@ func demo() {
 
 }
 
-func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB) error {
-	if err := DB.Table("tbl_membership_members").Where("is_deleted=0").Debug().Find(&MembershipMemberList).Error; err != nil {
-		return err
+func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId int) (Total_Members int64, err error) {
+	query:= DB.Table("tbl_membership_members").Where("is_deleted=0")
+
+
+	if limit != 0 {
+
+		query = query.Offset(offset).Limit(limit).Order("id desc")
+
+		query.Find(&MembershipMemberList)
+
+		return Total_Members, nil
+
 	}
-	return nil
-}
+
+	if filter.Keyword != "" {
+
+
+		query = query.Debug().Where("LOWER(TRIM(first_name)) LIKE LOWER(TRIM(?))"+" OR LOWER(TRIM(last_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
+
+
+		query.Find(&MembershipMemberList)
+
+		return Total_Members, nil
+	}
+
+
+	query.Count(&Total_Members)
+
+	return Total_Members, nil
+
+	}
+
 
 func (Membershipmodel MembershipModel) MemberCreateMembership(membercreate *TblMembershipMembers, DB *gorm.DB) error {
 
@@ -74,7 +100,7 @@ func (Membershipmodel MembershipModel) MembershipUpdateMember(UpdatedMember TblM
 	return nil
 }
 
-func (Membershipmodel MembershipModel)MembershipDeleteMember(memberid int, DB *gorm.DB,deletedon time.Time,deletedby int) error {
+func (Membershipmodel MembershipModel) MembershipDeleteMember(memberid int, DB *gorm.DB, deletedon time.Time, deletedby int) error {
 	if err := DB.Table("tbl_membership_members").Debug().Where("id=?", memberid).UpdateColumns(map[string]interface{}{"is_deleted": 1, "deleted_on": deletedon, "deleted_by": deletedby}).Error; err != nil {
 		return err
 	}

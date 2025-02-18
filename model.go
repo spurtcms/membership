@@ -1,6 +1,7 @@
 package membership
 
 import (
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -84,13 +85,37 @@ var Membershipmodel MembershipModel
 
 // membership pro models
 
-func (Membershipmodel MembershipModel) GetMembershipGroup(DB *gorm.DB) ([]TblMstrMembergrouplevel, error) {
-	var Subscriptiongroup []TblMstrMembergrouplevel
+func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]TblMstrMembergrouplevel,offset int, limit int, filter Filter, tenantid int, DB *gorm.DB) (Total_MembershipLevelgroup int64, err error) {
 
-	if err := DB.Table("tbl_mstr_membergrouplevels").Where("is_deleted=0").Find(&Subscriptiongroup).Error; err != nil {
-		return []TblMstrMembergrouplevel{}, err
+	query := DB.Table("tbl_mstr_membergrouplevels").Where("is_deleted=0")
+
+	if limit != 0 {
+
+		query = query.Offset(offset).Limit(limit).Order("id desc")
+
+		query.Find(&Subscriptiongroup)
+
+		return Total_MembershipLevelgroup, nil
+
 	}
-	return Subscriptiongroup, nil
+
+	if filter.Keyword != "" {
+
+
+		query = query.Where("LOWER(TRIM(group_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%")
+
+		query.Find(&Subscriptiongroup)
+
+		fmt.Println("group::", Subscriptiongroup)
+
+
+		return  Total_MembershipLevelgroup, nil
+	}
+
+
+	query.Count(&Total_MembershipLevelgroup)
+
+	return Total_MembershipLevelgroup, nil
 }
 
 func (Membershipmodel MembershipModel) CreateMembershipGrouplevel(paygroup TblMstrMembergrouplevel, DB *gorm.DB) error {
@@ -154,9 +179,6 @@ func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int,
 
 		return Total_MembershipLevel, nil
 	}
-
-	// query.Find(&sublist)	fmt.Println("filtr::",filter.Keyword)
-
 
 	query.Count(&Total_MembershipLevel)
 
