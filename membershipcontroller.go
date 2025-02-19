@@ -22,17 +22,15 @@ func MembershipSetup(config Config) *Membership {
 
 }
 
-
-
-func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64) {
+func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64, error) {
 
 	var subscriptionlist []TblMstrMembershiplevel
 
-	Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
+	_, err := Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
 
-	TotalMemebrshipCount, _ := Membershipmodel.GetMembershipLevel(0, 0, filter, &subscriptionlist, tenantid, Membership.DB)
+	TotalMemebrshipCount, err := Membershipmodel.GetMembershipLevel(0, 0, filter, &subscriptionlist, tenantid, Membership.DB)
 
-	return subscriptionlist, TotalMemebrshipCount
+	return subscriptionlist, TotalMemebrshipCount, err
 
 }
 
@@ -45,27 +43,35 @@ func (Membership *Membership) GetdefaultMembershiplevelTemplate() []TblMstrMembe
 	return DefaultMembershipLevelList
 
 }
-func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) []TblMstrMembershiplevel {
+func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) ([]TblMstrMembershiplevel, error) {
 
 	var SelectedMembershipData []TblMstrMembershiplevel
 
-	Membershipmodel.GetMembershiplevelDetails(&SelectedMembershipData, membershiplevelId, Membership.DB)
+	err := Membershipmodel.GetMembershiplevelDetails(&SelectedMembershipData, membershiplevelId, Membership.DB)
 
-	return SelectedMembershipData
+	if err != nil {
+		return []TblMstrMembershiplevel{}, err
+	}
+
+	return SelectedMembershipData, nil
 
 }
 
-func (Membership *Membership) MembershiplevelEdit(membershipid int) TblMstrMembershiplevel {
+func (Membership *Membership) MembershiplevelEdit(membershipid int) (TblMstrMembershiplevel, error) {
 
 	var Editmembership TblMstrMembershiplevel
 
-	Membershipmodel.Editmembershiplevel(&Editmembership, membershipid, Membership.DB)
+	err := Membershipmodel.Editmembershiplevel(&Editmembership, membershipid, Membership.DB)
 
-	return Editmembership
+	if err != nil {
+		return TblMstrMembershiplevel{}, err
+	}
+
+	return Editmembership, nil
 
 }
 
-func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid int) {
+func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid int) error {
 
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -86,11 +92,18 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 	subscriptiondata.TenantId = tenantid
 	subscriptiondata.IsActive = sd.IsActive
 
-	Membershipmodel.CreateSubscriptionLevel(subscriptiondata, Membership.DB)
+	err := Membershipmodel.CreateSubscriptionLevel(subscriptiondata, Membership.DB)
+
+	if err != nil {
+
+		return err
+	}
+
+	return nil
 
 }
 
-func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid int) {
+func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid int) error {
 	fmt.Println("")
 
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -113,11 +126,18 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 	Updatesubscription.IsActive = subscriptionNewdata.IsActive
 	Updatesubscription.ModifiedOn = time
 
-	Membershipmodel.Subscriptionupdate(Updatesubscription, tenantid, Membership.DB)
+	err := Membershipmodel.Subscriptionupdate(Updatesubscription, tenantid, Membership.DB)
+
+	if err != nil {
+
+		return err
+	}
+
+	return nil
 
 }
 
-func (Membership *Membership) SubscriptionDelete(tenantid int, id int, userid int) {
+func (Membership *Membership) SubscriptionDelete(tenantid int, id int, userid int) error {
 
 	var subscriptionlist TblMstrMembershiplevel
 
@@ -127,6 +147,38 @@ func (Membership *Membership) SubscriptionDelete(tenantid int, id int, userid in
 	subscriptionlist.DeletedBy = userid
 	subscriptionlist.TenantId = tenantid
 
-	Membershipmodel.DeleteSubscription(&subscriptionlist, id, Membership.DB)
+	err := Membershipmodel.DeleteSubscription(&subscriptionlist, id, Membership.DB)
+	if err != nil {
 
+		return err
+	}
+
+	return nil
+}
+
+func (Membership *Membership) DeleteMultiselectMembershipLevel(MembershipLevelids []int, userid int) error {
+
+	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	err := Membershipmodel.MultiselectDeleteMembershipLevel(MembershipLevelids, Membership.DB, deletedon, userid)
+	
+	if err != nil {
+
+		return err
+	}
+
+	return nil
+}
+
+func (Membership *Membership) ChangesMembershipLevelIsactive(membershiplevelid int, status int, modifiedby int, tenantid int) (bool, error) {
+	var membershiplevelstatus TblMstrMembershiplevel
+	membershiplevelstatus.ModifiedBy = modifiedby
+	membershiplevelstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	err := Membershipmodel.MembershiplevelChangeStatus(membershiplevelstatus, membershiplevelid, status, Membership.DB, tenantid)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }

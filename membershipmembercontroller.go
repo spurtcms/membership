@@ -5,17 +5,17 @@ import (
 	"time"
 )
 
-func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int)( []TblMembershipMembers , int64) {
+func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int) ([]TblMembershipMembers, int64) {
 
 	var MembershipMemberList []TblMembershipMembers
 
-	_,err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB,offset , limt ,filter, flag , TenantId )
+	_, err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB, offset, limt, filter, flag, TenantId)
 
-	Totalmembercount,err:= Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB,0, 0 ,filter, flag , TenantId )
+	Totalmembercount, err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB, 0, 0, filter, flag, TenantId)
 
 	fmt.Println("err", err)
 
-	return MembershipMemberList,Totalmembercount
+	return MembershipMemberList, Totalmembercount
 }
 
 func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember TblMembershipMembers) {
@@ -85,4 +85,25 @@ func (Membership *Membership) DeleteMembershipMember(memberid int, userid int) {
 
 	Membershipmodel.MembershipDeleteMember(memberid, Membership.DB, deletedon, userid)
 
+}
+
+func (Membership *Membership) DeleteMultiselectMember(memberids []int, userid int) {
+
+	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	Membershipmodel.MultiselectDeleteMember(memberids, Membership.DB, deletedon, userid)
+
+}
+
+func (Membership *Membership) ChangeMembershipStatus(membershipid int, status int, modifiedby int, tenantid int) (bool, error) {
+	var membershipstatus TblMembershipMembers
+	membershipstatus.ModifiedBy = modifiedby
+	membershipstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	err := Membershipmodel.MembershipChangeStatus(membershipstatus, membershipid, status, Membership.DB, tenantid)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }

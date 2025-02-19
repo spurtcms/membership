@@ -36,14 +36,17 @@ type TblMembershipOrder struct {
 	ModifiedBy                int       `gorm:"DEFAULT:NULL"`
 	TenantId                  int       `gorm:"type:integer"`
 	DateString                string    `gorm:"-"`
+	SubscriptionName          string    `gorm:"column:subscription_name"`
+	FirstName                 string    `gorm:"column:first_name"`
 }
 
 func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, filter Filter, tenantid int, DB *gorm.DB) (orderlist []TblMembershipOrder, count int64, err error) {
 
 	var orderlistcount int64
 
-	query := DB.Table("tbl_membership_orders").Where("is_deleted = 0 and  tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
-
+	query := DB.Debug().Table("tbl_membership_orders").
+		Select("tbl_membership_orders.*, tbl_mstr_membershiplevels.subscription_name,tbl_membership_members.first_name").
+		Joins("inner join tbl_mstr_membershiplevels on tbl_membership_orders.membershiplevel_id=tbl_mstr_membershiplevels.id").Joins("inner join tbl_membership_members on tbl_membership_orders.user_id=tbl_membership_members.id").Where("tbl_membership_orders.is_deleted = 0 and  tbl_membership_orders.tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
 
 	if limit != 0 {
 

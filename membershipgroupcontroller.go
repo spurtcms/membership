@@ -79,3 +79,27 @@ func (Membership *Membership) MembershipGroupDelete(id int, userid int, tenantid
 	}
 	Membershipmodel.DeleteMembershipgroup(Groupupdate, Membership.DB)
 }
+
+func (Membership *Membership) DeleteMultiselectMembershipGroup(MembershipGroupids []int, userid int) {
+
+	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	Membershipmodel.MultiselectDeleteMembershipGroup(MembershipGroupids, Membership.DB, deletedon, userid)
+
+}
+
+
+
+func (Membership *Membership) ChangeMembershipGroupStatus(membershipGroupid int, status int, modifiedby int, tenantid int) (bool, error) {
+	var membershipGroupstatus TblMstrMembergrouplevel
+	membershipGroupstatus.ModifiedBy = modifiedby
+	membershipGroupstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	err := Membershipmodel.MembershipGroupChangeStatus(membershipGroupstatus, membershipGroupid, status, Membership.DB, tenantid)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
