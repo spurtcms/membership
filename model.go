@@ -15,6 +15,7 @@ type Filter struct {
 	ToDate        string
 	FirstName     string
 	MemberProfile bool
+	Level         string
 }
 
 type TblMstrMembershiplevel struct {

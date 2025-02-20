@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-func (membership *Membership) OrderList(limit, offset int, filter Filter, tenantid int) (list []TblMembershipOrder, Count int64, err error) {
+func (membership *Membership) OrderList(limit, offset int, filter Filter, tenantid int) (list []TblMembershipOrders, Count int64, err error) {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
-		return []TblMembershipOrder{}, 0, Autherr
+		return []TblMembershipOrders{}, 0, Autherr
 	}
 
 	orderlist, _, _ := Membershipmodel.MemberShipOrderList(limit, offset, filter, tenantid, membership.DB)
@@ -17,7 +17,7 @@ func (membership *Membership) OrderList(limit, offset int, filter Filter, tenant
 	_, count, err := Membershipmodel.MemberShipOrderList(0, 0, filter, tenantid, membership.DB)
 	if err != nil {
 
-		return []TblMembershipOrder{}, 0, err
+		return []TblMembershipOrders{}, 0, err
 	}
 
 	return orderlist, count, nil
