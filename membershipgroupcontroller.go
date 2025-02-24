@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-func (memsership *Membership) MembershipGroupList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembergrouplevel, int64) {
+func (memsership *Membership) MembershipGroupList(offset int, limt int, filter Filter, tenantid int, isactive int) ([]TblMstrMembergrouplevel, int64) {
 	fmt.Println("")
 
 	var Subscriptiongroup []TblMstrMembergrouplevel
 
-	Membershipmodel.GetMembershipGroup(&Subscriptiongroup, offset, limt, filter, tenantid, memsership.DB)
+	Membershipmodel.GetMembershipGroup(&Subscriptiongroup, offset, limt, filter, tenantid, memsership.DB, isactive)
 
-	totalgroup, _ := Membershipmodel.GetMembershipGroup(&Subscriptiongroup, 0, 0, filter, tenantid, memsership.DB)
+	totalgroup, _ := Membershipmodel.GetMembershipGroup(&Subscriptiongroup, 0, 0, filter, tenantid, memsership.DB, isactive)
 
 	return Subscriptiongroup, totalgroup
 
@@ -88,8 +88,6 @@ func (Membership *Membership) DeleteMultiselectMembershipGroup(MembershipGroupid
 
 }
 
-
-
 func (Membership *Membership) ChangeMembershipGroupStatus(membershipGroupid int, status int, modifiedby int, tenantid int) (bool, error) {
 	var membershipGroupstatus TblMstrMembergrouplevel
 	membershipGroupstatus.ModifiedBy = modifiedby
@@ -102,4 +100,3 @@ func (Membership *Membership) ChangeMembershipGroupStatus(membershipGroupid int,
 
 	return true, nil
 }
-

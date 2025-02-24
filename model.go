@@ -89,9 +89,13 @@ var Membershipmodel MembershipModel
 
 // membership pro models
 
-func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]TblMstrMembergrouplevel, offset int, limit int, filter Filter, tenantid int, DB *gorm.DB) (Total_MembershipLevelgroup int64, err error) {
+func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]TblMstrMembergrouplevel, offset int, limit int, filter Filter, tenantid int, DB *gorm.DB,isactive int) (Total_MembershipLevelgroup int64, err error) {
 
 	query := DB.Table("tbl_mstr_membergrouplevels").Where("is_deleted=0")
+
+	if isactive==1{
+		query = query.Where("is_active=1")
+	}
 
 	if limit != 0 {
 
@@ -114,7 +118,7 @@ func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]T
 		return Total_MembershipLevelgroup, nil
 	}
 
-	query.Count(&Total_MembershipLevelgroup)
+	query.Count(&Total_MembershipLevelgroup).Find(&Subscriptiongroup)
 
 	return Total_MembershipLevelgroup, nil
 }
