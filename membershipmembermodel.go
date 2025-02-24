@@ -34,6 +34,13 @@ type TblMembershipMembers struct {
 	StorageType      string    `gorm:"type:character varying"`
 	TenantId         int       `gorm:"type:integer"`
 	DateString       string    `gorm:"-"`
+	DateStringend    string    `gorm:"-"`
+
+	SubscriptionName string    `gorm:"<-:false"`
+	InitialPayment   float64   `gorm:"<-:false"`
+	PlanDuration     int       `gorm:"<-:false"`
+	MultiplyDuration int       `gorm:"<-:false"`
+	EndDate          time.Time `gorm:"<-:false"`
 }
 
 func demo() {
@@ -44,33 +51,82 @@ func demo() {
 
 }
 
+// func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId int) (Total_Members int64, err error) {
+// 	// Start building the SQL query
+// 	query := DB.Table("tbl_membership_members").
+// 		Debug().
+// 		Select("tbl_membership_members.*, tbl_mstr_membershiplevels.subscription_name as subscription_name, tbl_mstr_membershiplevels.initial_payment as initial_payment, tbl_mstr_membershiplevels.billingfrequent_type as plan_uration, tbl_mstr_membershiplevels.billingfrequent_value as multiply_duration,tbl_membership_subscriptions.created_on as end_date").
+// 		Where("tbl_membership_members.tenant_id = ? AND tbl_membership_members.is_deleted = 0", TenantId)
+
+// 	// Join the tables with proper references
+// 	query = query.Joins("left JOIN tbl_membership_subcriptions ON tbl_membership_subcriptions.member_id = tbl_membership_members.id").
+// 		Joins("left JOIN tbl_mstr_membershiplevels ON tbl_mstr_membershiplevels.id = tbl_membership_subcriptions.membership_level_id")
+
+// 	// Apply limit and offset if provided
+// 	if limit != 0 {
+// 		query = query.Offset(offset).Limit(limit).Order("tbl_membership_members.id DESC")
+
+// 		// Execute the query and return the results
+// 		query.Find(&MembershipMemberList)
+
+// 		return Total_Members, nil
+// 	}
+
+// 	// If a filter keyword is provided, apply the filter
+// 	if filter.Keyword != "" {
+// 		query = query.Debug().
+// 			Where("LOWER(TRIM(tbl_membership_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_membership_members.last_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
+
+// 		// Execute the query and return the results
+// 		query.Find(&MembershipMemberList)
+
+// 		return Total_Members, nil
+// 	}
+
+// 	// Get the total count of members
+// 	query.Count(&Total_Members).Find(&MembershipMemberList)
+
+// 	return Total_Members, nil
+// }
+
 func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId int) (Total_Members int64, err error) {
-	query := DB.Table("tbl_membership_members").Where("is_deleted=0")
+	// Start building the SQL query
+	query := DB.Table("tbl_membership_members").
+		Debug().
+		Select("tbl_membership_members.*, tbl_mstr_membershiplevels.subscription_name as subscription_name, tbl_mstr_membershiplevels.initial_payment as initial_payment, tbl_mstr_membershiplevels.billingfrequent_type as plan_duration, tbl_mstr_membershiplevels.billingfrequent_value as multiply_duration, tbl_membership_subcriptions.created_on as end_date").
+		Where("tbl_membership_members.tenant_id = ? AND tbl_membership_members.is_deleted = 0", TenantId)
 
+	// Join the tables with proper references
+	query = query.Joins("left JOIN tbl_membership_subcriptions ON tbl_membership_subcriptions.member_id = tbl_membership_members.id").
+		Joins("left JOIN tbl_mstr_membershiplevels ON tbl_mstr_membershiplevels.id = tbl_membership_subcriptions.membership_level_id")
+
+	// Apply limit and offset if provided
 	if limit != 0 {
+		query = query.Offset(offset).Limit(limit).Order("tbl_membership_members.id DESC")
 
-		query = query.Offset(offset).Limit(limit).Order("id desc")
-
+		// Execute the query and return the results
 		query.Find(&MembershipMemberList)
 
 		return Total_Members, nil
-
 	}
 
+	// If a filter keyword is provided, apply the filter
 	if filter.Keyword != "" {
+		query = query.Debug().
+			Where("LOWER(TRIM(tbl_membership_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_membership_members.last_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
 
-		query = query.Debug().Where("LOWER(TRIM(first_name)) LIKE LOWER(TRIM(?))"+" OR LOWER(TRIM(last_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
-
+		// Execute the query and return the results
 		query.Find(&MembershipMemberList)
 
 		return Total_Members, nil
 	}
 
-	query.Count(&Total_Members)
+	// Get the total count of members
+	query.Count(&Total_Members).Find(&MembershipMemberList)
 
 	return Total_Members, nil
-
 }
+
 
 func (Membershipmodel MembershipModel) MemberCreateMembership(membercreate *TblMembershipMembers, DB *gorm.DB) error {
 

@@ -24,11 +24,14 @@ func MembershipSetup(config Config) *Membership {
 
 func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64, error) {
 
+	
 	var subscriptionlist []TblMstrMembershiplevel
 
-	_, err := Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
-
 	TotalMemebrshipCount, err := Membershipmodel.GetMembershipLevel(0, 0, filter, &subscriptionlist, tenantid, Membership.DB)
+
+
+     Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
+
 
 	return subscriptionlist, TotalMemebrshipCount, err
 
@@ -161,7 +164,7 @@ func (Membership *Membership) DeleteMultiselectMembershipLevel(MembershipLevelid
 	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 	err := Membershipmodel.MultiselectDeleteMembershipLevel(MembershipLevelids, Membership.DB, deletedon, userid)
-	
+
 	if err != nil {
 
 		return err

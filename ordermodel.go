@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Create Order
 type TblMembershipOrder struct {
 	Id                        int       `gorm:"primaryKey;auto_increment;type:serial"`
 	UserId                    int       `gorm:"type:integer"`
@@ -38,6 +39,7 @@ type TblMembershipOrder struct {
 	TenantId                  int       `gorm:"type:integer"`
 }
 
+// Fetch datas
 type TblMembershipOrders struct {
 	Id                        int       `gorm:"primaryKey;auto_increment;type:serial"`
 	UserId                    int       `gorm:"type:integer"`
@@ -70,6 +72,7 @@ type TblMembershipOrders struct {
 	DateString                string    `gorm:"-"`
 	SubscriptionName          string    `gorm:"column:subscription_name"`
 	FirstName                 string    `gorm:"column:first_name"`
+	SubscriptionTransactionId string    `gorm:"column:subscription_transaction_id"`
 }
 
 func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, filter Filter, tenantid int, DB *gorm.DB) (orderlist []TblMembershipOrders, count int64, err error) {
@@ -77,8 +80,8 @@ func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, fi
 	var orderlistcount int64
 
 	query := DB.Debug().Table("tbl_membership_orders").
-		Select("tbl_membership_orders.*, tbl_mstr_membershiplevels.subscription_name,tbl_membership_members.first_name").
-		Joins("inner join tbl_mstr_membershiplevels on tbl_membership_orders.membershiplevel_id=tbl_mstr_membershiplevels.id").Joins("inner join tbl_membership_members on tbl_membership_orders.user_id=tbl_membership_members.id").Where("tbl_membership_orders.is_deleted = 0 and  tbl_membership_orders.tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
+		Select("tbl_membership_orders.*, tbl_mstr_membershiplevels.subscription_name,tbl_membership_members.first_name,tbl_membership_subcriptions.subscription_transaction_id").
+		Joins("inner join tbl_mstr_membershiplevels on tbl_membership_orders.membershiplevel_id=tbl_mstr_membershiplevels.id").Joins("inner join tbl_membership_members on tbl_membership_orders.user_id=tbl_membership_members.id").Joins("inner join tbl_membership_subcriptions on tbl_membership_orders.user_id=tbl_membership_subcriptions.member_id").Where("tbl_membership_orders.is_deleted = 0 and  tbl_membership_orders.tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
 
 	if filter.Keyword != "" {
 
@@ -92,23 +95,19 @@ func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, fi
 
 	}
 
-	if filter.FromDate != "" && filter.ToDate != "" {
+	if filter.OrderId != 0 {
 
-		query = query.Where("tbl_membership_orders.created_on >= ? AND tbl_membership_orders.created_on <= ?", filter.FromDate, filter.ToDate+" 23:59:59")
+		query = query.Where("tbl_membership_orders.id=?",filter.OrderId)
 
-	}
-
-	if filter.FromDate != "" && filter.ToDate == "" {
-
-		query = query.Where("tbl_membership_orders.created_on >= ?", filter.FromDate)
-		fmt.Println("Hello")
-	}
-
-	if filter.FromDate == "" && filter.ToDate != "" {
-
-		query = query.Where("tbl_membership_orders.created_on <= ?", filter.ToDate+" 23:59:59")
 
 	}
+
+	if filter.TransactionId != "" {
+
+		query = query.Where("tbl_membership_subcriptions.subscription_transaction_id=?",filter.TransactionId)
+		fmt.Println("filter.TransactionId:",filter.TransactionId)
+	}
+
 
 	if limit != 0 {
 

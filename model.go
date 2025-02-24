@@ -16,6 +16,8 @@ type Filter struct {
 	FirstName     string
 	MemberProfile bool
 	Level         string
+	OrderId       int
+	TransactionId string
 }
 
 type TblMstrMembershiplevel struct {
@@ -173,7 +175,6 @@ func (membershipmodel MembershipModel) CreateSubscriptionLevel(subscriptions Tbl
 }
 
 func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int, filter Filter, sublist *[]TblMstrMembershiplevel, tenant_id int, DB *gorm.DB) (Total_MembershipLevel int64, err error) {
-
 	query := DB.Table("tbl_mstr_membershiplevels").Where("tenant_id=? and is_deleted=0", tenant_id)
 
 	if limit != 0 {
@@ -205,8 +206,8 @@ func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int,
 		return Total_MembershipLevel, nil
 	}
 
-	query.Count(&Total_MembershipLevel)
-
+	query.Count(&Total_MembershipLevel).Find(&sublist)
+	fmt.Println("Total_MembershipLevel:", Total_MembershipLevel)
 	return Total_MembershipLevel, nil
 }
 

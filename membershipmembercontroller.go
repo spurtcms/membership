@@ -9,9 +9,9 @@ func (Membership *Membership) MembershipListMembers(offset int, limt int, filter
 
 	var MembershipMemberList []TblMembershipMembers
 
-	_, err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB, offset, limt, filter, flag, TenantId)
-
 	Totalmembercount, err := Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB, 0, 0, filter, flag, TenantId)
+
+	Membershipmodel.ListMembers(&MembershipMemberList, Membership.DB, offset, limt, filter, flag, TenantId)
 
 	fmt.Println("err", err)
 
