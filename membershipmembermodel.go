@@ -104,21 +104,24 @@ func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMe
 	if limit != 0 {
 		query = query.Offset(offset).Limit(limit).Order("tbl_membership_members.id DESC")
 
-		// Execute the query and return the results
-		query.Find(&MembershipMemberList)
-
-		return Total_Members, nil
 	}
 
 	// If a filter keyword is provided, apply the filter
 	if filter.Keyword != "" {
 		query = query.Debug().
-			Where("LOWER(TRIM(tbl_membership_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_membership_members.last_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
+			Where("LOWER(TRIM(tbl_membership_members.first_name)) LIKE LOWER(TRIM(?)) OR LOWER(TRIM(tbl_membership_members.email)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%", "%"+filter.Keyword+"%")
 
-		// Execute the query and return the results
-		query.Find(&MembershipMemberList)
+	}
 
-		return Total_Members, nil
+	if filter.Level != "" {
+
+		query = query.Where("LOWER(TRIM(tbl_mstr_membershiplevels.subscription_name)) like LOWER(TRIM(?))", "%"+filter.Level+"%")
+
+	}
+	if filter.FromDate != "" {
+		query = query.Where("tbl_membership_subcriptions.created_on >= ? AND tbl_membership_subcriptions.created_on < ?",
+			filter.FromDate+" 00:00:00",
+			filter.FromDate+" 23:59:59")
 	}
 
 	// Get the total count of members
@@ -126,7 +129,6 @@ func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMe
 
 	return Total_Members, nil
 }
-
 
 func (Membershipmodel MembershipModel) MemberCreateMembership(membercreate *TblMembershipMembers, DB *gorm.DB) error {
 

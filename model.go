@@ -18,8 +18,8 @@ type Filter struct {
 	Level         string
 	OrderId       int
 	TransactionId string
+	Gateway       string
 }
-
 type TblMstrMembershiplevel struct {
 	Id                    int       `gorm:"primaryKey;auto_increment;type:serial"`
 	SubscriptionName      string    `gorm:"type:character varying"`
@@ -89,11 +89,11 @@ var Membershipmodel MembershipModel
 
 // membership pro models
 
-func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]TblMstrMembergrouplevel, offset int, limit int, filter Filter, tenantid int, DB *gorm.DB,isactive int) (Total_MembershipLevelgroup int64, err error) {
+func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]TblMstrMembergrouplevel, offset int, limit int, filter Filter, tenantid int, DB *gorm.DB, isactive int) (Total_MembershipLevelgroup int64, err error) {
 
 	query := DB.Table("tbl_mstr_membergrouplevels").Where("is_deleted=0")
 
-	if isactive==1{
+	if isactive == 1 {
 		query = query.Where("is_active=1")
 	}
 
@@ -116,6 +116,23 @@ func (Membershipmodel MembershipModel) GetMembershipGroup(Subscriptiongroup *[]T
 		fmt.Println("group::", Subscriptiongroup)
 
 		return Total_MembershipLevelgroup, nil
+	}
+
+	if filter.ToDate != "" {
+		query = query.Where("tbl_mstr_membergrouplevels.modified_on >= ? AND ttbl_mstr_membergrouplevels.modified_on < ?",
+			filter.ToDate+" 00:00:00",
+			filter.ToDate+" 23:59:59")
+	}
+	if filter.Status != "" {
+
+		if filter.Status == "Active" {
+
+			query = query.Where("tbl_mstr_membergrouplevels.is_active=?", 1)
+		}
+		if filter.Status == "Inactive" {
+
+			query = query.Where("tbl_mstr_membergrouplevels.is_active=?", 0)
+		}
 	}
 
 	query.Count(&Total_MembershipLevelgroup).Find(&Subscriptiongroup)
@@ -179,20 +196,11 @@ func (membershipmodel MembershipModel) CreateSubscriptionLevel(subscriptions Tbl
 }
 
 func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int, filter Filter, sublist *[]TblMstrMembershiplevel, tenant_id int, DB *gorm.DB) (Total_MembershipLevel int64, err error) {
-	query := DB.Table("tbl_mstr_membershiplevels").Where("tenant_id=? and is_deleted=0", tenant_id)
+	query := DB.Debug().Table("tbl_mstr_membershiplevels").Where("tenant_id=? and is_deleted=0", tenant_id)
 
 	if limit != 0 {
 
 		query = query.Offset(offset).Limit(limit).Order("id desc")
-
-		err := query.Find(&sublist).Error
-
-		if err != nil {
-
-			return 0, err
-		}
-
-		return Total_MembershipLevel, nil
 
 	}
 
@@ -200,18 +208,26 @@ func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int,
 
 		query = query.Where("LOWER(TRIM(subscription_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%")
 
-		err := query.Find(&sublist).Error
+	}
+	if filter.Level != "" {
 
-		if err != nil {
+		query = query.Where("LOWER(TRIM(tbl_mstr_membershiplevels.subscription_name)) like LOWER(TRIM(?))", "%"+filter.Level+"%")
 
-			return 0, err
-		}
+	}
+	if filter.FromDate != "" {
+		query = query.Where("tbl_mstr_membershiplevels.created_on >= ? AND tbl_mstr_membershiplevels.created_on < ?",
+			filter.FromDate+" 00:00:00",
+			filter.FromDate+" 23:59:59")
+	}
 
-		return Total_MembershipLevel, nil
+	if filter.ToDate != "" {
+		query = query.Where("tbl_mstr_membershiplevels.modified_on >= ? AND tbl_mstr_membershiplevels.modified_on < ?",
+			filter.ToDate+" 00:00:00",
+			filter.ToDate+" 23:59:59")
 	}
 
 	query.Count(&Total_MembershipLevel).Find(&sublist)
-	fmt.Println("Total_MembershipLevel:", Total_MembershipLevel)
+
 	return Total_MembershipLevel, nil
 }
 

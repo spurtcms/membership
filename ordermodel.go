@@ -80,8 +80,8 @@ func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, fi
 	var orderlistcount int64
 
 	query := DB.Debug().Table("tbl_membership_orders").
-		Select("tbl_membership_orders.*, tbl_mstr_membershiplevels.subscription_name,tbl_membership_members.first_name,tbl_membership_subcriptions.subscription_transaction_id").
-		Joins("inner join tbl_mstr_membershiplevels on tbl_membership_orders.membershiplevel_id=tbl_mstr_membershiplevels.id").Joins("inner join tbl_membership_members on tbl_membership_orders.user_id=tbl_membership_members.id").Joins("inner join tbl_membership_subcriptions on tbl_membership_orders.user_id=tbl_membership_subcriptions.member_id").Where("tbl_membership_orders.is_deleted = 0 and  tbl_membership_orders.tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
+		Select("tbl_membership_orders.*, tbl_mstr_membershiplevels.subscription_name,tbl_membership_members.first_name").
+		Joins("inner join tbl_mstr_membershiplevels on tbl_membership_orders.membershiplevel_id=tbl_mstr_membershiplevels.id").Joins("inner join tbl_membership_members on tbl_membership_orders.user_id=tbl_membership_members.id").Where("tbl_membership_orders.is_deleted = 0 and  tbl_membership_orders.tenant_id = ?", tenantid).Order("tbl_membership_orders.id desc")
 
 	if filter.Keyword != "" {
 
@@ -97,17 +97,15 @@ func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, fi
 
 	if filter.OrderId != 0 {
 
-		query = query.Where("tbl_membership_orders.id=?",filter.OrderId)
-
+		query = query.Where("tbl_membership_orders.id=?", filter.OrderId)
 
 	}
 
 	if filter.TransactionId != "" {
 
-		query = query.Where("tbl_membership_subcriptions.subscription_transaction_id=?",filter.TransactionId)
-		fmt.Println("filter.TransactionId:",filter.TransactionId)
+		query = query.Where("tbl_membership_orders.subscriptiontransaction_id=?", filter.TransactionId)
+		fmt.Println("Hello:")
 	}
-
 
 	if limit != 0 {
 

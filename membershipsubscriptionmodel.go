@@ -64,7 +64,40 @@ func (membershipmodel MembershipModel) ListSubscription(offset int, limit int, f
 		return Total_Subscription, nil
 	}
 
-	query.Count(&Total_Subscription)
+	if filter.Gateway != "" {
+		query = query.Where("LOWER(TRIM(tbl_membership_subcriptions.gateway)) LIKE LOWER(TRIM(?))", "%"+filter.Gateway+"%")
+
+		err := query.Find(&subscriptionlist).Error
+		if err != nil {
+			return 0, err
+		}
+
+		return Total_Subscription, nil
+	}
+
+	if filter.Level != "" {
+		query = query.Where("LOWER(TRIM(tbl_mstr_membershiplevels.subscription_name)) LIKE LOWER(TRIM(?))", "%"+filter.Level+"%")
+
+		err := query.Find(&subscriptionlist).Error
+		if err != nil {
+			return 0, err
+		}
+
+		return Total_Subscription, nil
+	}
+
+	if filter.TransactionId != "" {
+		query = query.Where("LOWER(TRIM(tbl_membership_subcriptions.subscription_transaction_id)) LIKE LOWER(TRIM(?))", "%"+filter.TransactionId+"%")
+
+		err := query.Find(&subscriptionlist).Error
+		if err != nil {
+			return 0, err
+		}
+
+		return Total_Subscription, nil
+	}
+
+	query.Count(&Total_Subscription).Find(&subscriptionlist)
 
 	return Total_Subscription, nil
 }
@@ -113,7 +146,7 @@ func (Membershipmodel MembershipModel) DeleteSubscriptions(id, tenantid, deleted
 
 func (Membershipmodel MembershipModel) SubscriptionChangeStatus(subscriptionstatus TblMembershipSubcriptions, subscriptionid int, status int, DB *gorm.DB, tenantid int) error {
 
-	fmt.Println("status:",status,subscriptionid)
+	fmt.Println("status:", status, subscriptionid)
 	if err := DB.Table("tbl_membership_subcriptions").Debug().Where("id=? and tenant_id=?", subscriptionid, tenantid).UpdateColumns(map[string]interface{}{"is_active": status, "modified_by": subscriptionstatus.ModifiedBy, "modified_on": subscriptionstatus.ModifiedOn}).Error; err != nil {
 
 		return err
@@ -121,9 +154,6 @@ func (Membershipmodel MembershipModel) SubscriptionChangeStatus(subscriptionstat
 
 	return nil
 }
-
-
-
 
 func (Membershipmodel MembershipModel) MultiselectDeleteSubscription(SubscriptionIds []int, DB *gorm.DB, deletedon time.Time, deletedby int) error {
 	if err := DB.Table("tbl_membership_subcriptions").Where("id IN (?)", SubscriptionIds).UpdateColumns(map[string]interface{}{"is_deleted": 1, "deleted_on": deletedon, "deleted_by": deletedby}).Error; err != nil {
