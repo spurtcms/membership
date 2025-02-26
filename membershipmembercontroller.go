@@ -107,3 +107,30 @@ func (Membership *Membership) ChangeMembershipStatus(membershipid int, status in
 
 	return true, nil
 }
+
+func (Membership *Membership) CreateCheckOut(name string, mail string, pass string, phonenumber string, companyname string, position string, tenant int, createdby int) (bool, error) {
+
+	var checkoutdata TblMembershipMembers
+	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+
+	checkoutdata.FirstName = name
+	checkoutdata.Username = name
+	checkoutdata.Email = mail
+	if pass != "" {
+		hash_pass := hashingPassword(checkoutdata.Password)
+		checkoutdata.Password = hash_pass
+	}
+	checkoutdata.MobileNo = phonenumber
+	checkoutdata.TenantId = tenant
+	checkoutdata.CreatedOn = time
+	checkoutdata.IsActive = 0
+	checkoutdata.CreatedBy = createdby
+
+	_,err := Membershipmodel.CheckoutCreate(&checkoutdata, Membership.DB,companyname,position)
+	if err != nil {
+		fmt.Println(err)
+		return false, err
+	}
+	return true, nil
+
+}

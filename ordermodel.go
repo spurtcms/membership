@@ -22,7 +22,7 @@ type TblMembershipOrder struct {
 	BillingPhone              string    `gorm:"type:character varying"`
 	SubTotal                  int       `gorm:"type:integer"`
 	Tax                       int       `gorm:"type:integer"`
-	Total                     int       `gorm:"type:integer"`
+	Total                     string    `gorm:"type:character varying"`
 	PaymentType               string    `gorm:"type:character varying"`
 	Status                    string    `gorm:"type:character varying"`
 	Gateway                   string    `gorm:"type:character varying"`
@@ -54,7 +54,7 @@ type TblMembershipOrders struct {
 	BillingPhone              string    `gorm:"type:character varying"`
 	SubTotal                  int       `gorm:"type:integer"`
 	Tax                       int       `gorm:"type:integer"`
-	Total                     int       `gorm:"type:integer"`
+	Total                     string    `gorm:"type:character varying"`
 	PaymentType               string    `gorm:"type:character varying"`
 	Status                    string    `gorm:"type:character varying"`
 	Gateway                   string    `gorm:"type:character varying"`

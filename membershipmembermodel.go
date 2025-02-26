@@ -43,6 +43,14 @@ type TblMembershipMembers struct {
 	EndDate          time.Time `gorm:"<-:false"`
 }
 
+type TblMembershipCompanyInfo struct {
+	Id          int    `gorm:"primaryKey;auto_increment;type:serial"`
+	MemberId    int    `gorm:"type:integer"`
+	CompanyName string `gorm:"type:character varying"`
+	Position    string `gorm:"type:character varying"`
+	TenantId    int    `gorm:"type:integer"`
+}
+
 func demo() {
 	fmt.Println("ds")
 	strings.ToLower("dskjv ")
@@ -176,4 +184,24 @@ func (Membershipmodel MembershipModel) MembershipChangeStatus(membershipstatus T
 	}
 
 	return nil
+}
+
+func (Membershipmodel MembershipModel) CheckoutCreate(Checkout *TblMembershipMembers, DB *gorm.DB, companyname, position string) (bool, error) {
+
+	if err := DB.Table("tbl_membership_members").Create(&Checkout).Error; err != nil {
+		return false, nil
+	}
+
+	var companyinfo = TblMembershipCompanyInfo{
+		MemberId:    Checkout.Id,
+		CompanyName: companyname,
+		Position:    position,
+		TenantId:    Checkout.TenantId,
+	}
+
+	if err := DB.Table("tbl_membership_company_infos").Create(&companyinfo).Error; err != nil {
+		return false, nil
+	}
+
+	return true, nil
 }
