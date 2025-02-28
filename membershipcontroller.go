@@ -24,14 +24,11 @@ func MembershipSetup(config Config) *Membership {
 
 func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64, error) {
 
-	
 	var subscriptionlist []TblMstrMembershiplevel
 
 	TotalMemebrshipCount, err := Membershipmodel.GetMembershipLevel(0, 0, filter, &subscriptionlist, tenantid, Membership.DB)
 
-
-     Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
-
+	Membershipmodel.GetMembershipLevel(offset, limt, filter, &subscriptionlist, tenantid, Membership.DB)
 
 	return subscriptionlist, TotalMemebrshipCount, err
 
@@ -60,11 +57,11 @@ func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) ([]T
 
 }
 
-func (Membership *Membership) MembershiplevelEdit(membershipid int) (TblMstrMembershiplevel, error) {
+func (Membership *Membership) MembershiplevelEdit(membershipid int, tenantid int) (TblMstrMembershiplevel, error) {
 
 	var Editmembership TblMstrMembershiplevel
 
-	err := Membershipmodel.Editmembershiplevel(&Editmembership, membershipid, Membership.DB)
+	err := Membershipmodel.Editmembershiplevel(&Editmembership, membershipid,tenantid, Membership.DB)
 
 	if err != nil {
 		return TblMstrMembershiplevel{}, err

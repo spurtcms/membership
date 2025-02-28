@@ -245,8 +245,8 @@ func (membershipmodel MembershipModel) GetMembershiplevelDetails(SelectedMembers
 	return nil
 }
 
-func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMstrMembershiplevel, Id int, DB *gorm.DB) error {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where("is_deleted=0 and id=?", Id).First(&Editmembership).Error; err != nil {
+func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMstrMembershiplevel, Id int, tenantid int, DB *gorm.DB) error {
+	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where("is_deleted=0 and tenant_id=? and id=?", tenantid,Id).First(&Editmembership).Error; err != nil {
 		return err
 	}
 	return nil
