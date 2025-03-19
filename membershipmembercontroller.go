@@ -3,6 +3,8 @@ package membership
 import (
 	"fmt"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int) ([]TblMembershipMembers, int64) {
@@ -20,10 +22,12 @@ func (Membership *Membership) MembershipListMembers(offset int, limt int, filter
 
 func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember TblMembershipMembers) {
 
-	// uvuid := (uuid.New()).String()
+	uvuid := (uuid.New()).String()
+
+	customString := "M-"+uvuid[:5]
 
 	var Createmember TblMembershipMembers
-	// Createmember.Uuid = uvuid
+	Createmember.Uuid = customString
 	Createmember.ProfileImage = CreateMembershipMember.ProfileImage
 	Createmember.ProfileImagePath = CreateMembershipMember.ProfileImagePath
 	Createmember.FirstName = CreateMembershipMember.FirstName
@@ -126,7 +130,7 @@ func (Membership *Membership) CreateCheckOut(name string, mail string, pass stri
 	checkoutdata.IsActive = 0
 	checkoutdata.CreatedBy = createdby
 
-	_,err := Membershipmodel.CheckoutCreate(&checkoutdata, Membership.DB,companyname,position)
+	_, err := Membershipmodel.CheckoutCreate(&checkoutdata, Membership.DB, companyname, position)
 	if err != nil {
 		fmt.Println(err)
 		return false, err
