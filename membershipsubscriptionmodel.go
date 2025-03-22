@@ -20,7 +20,7 @@ type TblMembershipSubcriptions struct {
 	CreatedBy                 int       `gorm:"type:integer"`
 	ModifiedOn                time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	ModifiedBy                int       `gorm:"DEFAULT:NULL"`
-	TenantId                  int       `gorm:"type:integer"`
+	TenantId                  string    `gorm:"type:character varying"`
 	MembershipLevelId         int       `gorm:"type:integer"`
 	MemberName                string    `gorm:"type:character varying"`
 	IsActive                  int       `gorm:"type:integer"`
@@ -33,7 +33,7 @@ type TblMembershipSubcriptions struct {
 	MembershiplevelId         string    `gorm:"<-:false"`
 }
 
-func (membershipmodel MembershipModel) ListSubscription(offset int, limit int, filter Filter, subscriptionlist *[]TblMembershipSubcriptions, tenant_id int, DB *gorm.DB) (Total_Subscription int64, err error) {
+func (membershipmodel MembershipModel) ListSubscription(offset int, limit int, filter Filter, subscriptionlist *[]TblMembershipSubcriptions, tenant_id string, DB *gorm.DB) (Total_Subscription int64, err error) {
 	query := DB.Table("tbl_membership_subcriptions").
 		Select("tbl_membership_subcriptions.*, tbl_mstr_membershiplevels.subscription_name as subscription_name,tbl_mstr_membershiplevels.initial_payment as initial_payment, tbl_membership_members.first_name as first_name, tbl_membership_members.last_name as last_name").
 		Where("tbl_membership_subcriptions.tenant_id=? and tbl_membership_subcriptions.is_deleted=0", tenant_id)
@@ -110,7 +110,7 @@ func (Membershipmodel MembershipModel) CreateMembershipSubscription(Subscription
 	return nil
 }
 
-func (membershipmodel MembershipModel) EditSubscription(subscriptionId *TblMembershipSubcriptions, Id int, DB *gorm.DB, tenant_id int) error {
+func (membershipmodel MembershipModel) EditSubscription(subscriptionId *TblMembershipSubcriptions, Id int, DB *gorm.DB, tenant_id string) error {
 
 	query := DB.Table("tbl_membership_subcriptions").Select("tbl_membership_subcriptions.*, tbl_mstr_membershiplevels.subscription_name as subscription_name,tbl_membership_members.id as user_id,tbl_mstr_membershiplevels.id as membershiplevel_id,tbl_membership_members.first_name as first_name, tbl_membership_members.last_name as last_name").
 		Where("tbl_membership_subcriptions.tenant_id=? and tbl_membership_subcriptions.id=? and  tbl_membership_subcriptions.is_deleted=0", tenant_id, Id)
@@ -134,7 +134,7 @@ func (Membershipmodel MembershipModel) UpdateSubscription(UpdatedSubscription Tb
 	return nil
 }
 
-func (Membershipmodel MembershipModel) DeleteSubscriptions(id, tenantid, deletedby int, deletedon time.Time, DB *gorm.DB) error {
+func (Membershipmodel MembershipModel) DeleteSubscriptions(id int, tenantid string, deletedby int, deletedon time.Time, DB *gorm.DB) error {
 
 	if err := DB.Table("tbl_membership_subcriptions").Where("id=? and tenant_id=?", id, tenantid).UpdateColumns(map[string]interface{}{"is_deleted": 1, "deleted_by": deletedby, "deleted_on": deletedon}).Error; err != nil {
 
@@ -144,7 +144,7 @@ func (Membershipmodel MembershipModel) DeleteSubscriptions(id, tenantid, deleted
 	return nil
 }
 
-func (Membershipmodel MembershipModel) SubscriptionChangeStatus(subscriptionstatus TblMembershipSubcriptions, subscriptionid int, status int, DB *gorm.DB, tenantid int) error {
+func (Membershipmodel MembershipModel) SubscriptionChangeStatus(subscriptionstatus TblMembershipSubcriptions, subscriptionid int, status int, DB *gorm.DB, tenantid string) error {
 
 	fmt.Println("status:", status, subscriptionid)
 	if err := DB.Table("tbl_membership_subcriptions").Debug().Where("id=? and tenant_id=?", subscriptionid, tenantid).UpdateColumns(map[string]interface{}{"is_active": status, "modified_by": subscriptionstatus.ModifiedBy, "modified_on": subscriptionstatus.ModifiedOn}).Error; err != nil {

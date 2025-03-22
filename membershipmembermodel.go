@@ -32,7 +32,7 @@ type TblMembershipMembers struct {
 	ModifiedOn       time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	ModifiedBy       int       `gorm:"DEFAULT:NULL"`
 	StorageType      string    `gorm:"type:character varying"`
-	TenantId         int       `gorm:"type:integer"`
+	TenantId         string    `gorm:"type:character varying"`
 	DateString       string    `gorm:"-"`
 	DateStringend    string    `gorm:"-"`
 
@@ -48,7 +48,7 @@ type TblMembershipCompanyInfo struct {
 	MemberId    int    `gorm:"type:integer"`
 	CompanyName string `gorm:"type:character varying"`
 	Position    string `gorm:"type:character varying"`
-	TenantId    int    `gorm:"type:integer"`
+	TenantId    string `gorm:"type:character varying"`
 }
 
 func demo() {
@@ -59,7 +59,7 @@ func demo() {
 
 }
 
-// func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId int) (Total_Members int64, err error) {
+// func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId string) (Total_Members int64, err error) {
 // 	// Start building the SQL query
 // 	query := DB.Table("tbl_membership_members").
 // 		Debug().
@@ -97,7 +97,7 @@ func demo() {
 // 	return Total_Members, nil
 // }
 
-func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId int) (Total_Members int64, err error) {
+func (membershipmodel MembershipModel) ListMembers(MembershipMemberList *[]TblMembershipMembers, DB *gorm.DB, offset int, limit int, filter Filter, flag bool, TenantId string) (Total_Members int64, err error) {
 	// Start building the SQL query
 	query := DB.Table("tbl_membership_members").
 		Debug().
@@ -177,7 +177,7 @@ func (Membershipmodel MembershipModel) MultiselectDeleteMember(memberids []int, 
 
 // Membership  IsActive Function
 
-func (Membershipmodel MembershipModel) MembershipChangeStatus(membershipstatus TblMembershipMembers, membershipid int, status int, DB *gorm.DB, tenantid int) error {
+func (Membershipmodel MembershipModel) MembershipChangeStatus(membershipstatus TblMembershipMembers, membershipid int, status int, DB *gorm.DB, tenantid string) error {
 	if err := DB.Table("tbl_membership_members").Where("id=? and tenant_id=?", membershipid, tenantid).UpdateColumns(map[string]interface{}{"is_active": status, "modified_by": membershipstatus.ModifiedBy, "modified_on": membershipstatus.ModifiedOn}).Error; err != nil {
 
 		return err

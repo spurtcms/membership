@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (membership *Membership) OrderList(limit, offset int, filter Filter, tenantid int) (list []TblMembershipOrders, Count int64, err error) {
+func (membership *Membership) OrderList(limit, offset int, filter Filter, tenantid string) (list []TblMembershipOrders, Count int64, err error) {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
@@ -69,7 +69,7 @@ func (membership *Membership) CreateOrder(orders TblMembershipOrder) error {
 
 }
 
-func (membership *Membership) EditMembershipOrder(id, tenantid int) (orderlist TblMembershipOrder, err error) {
+func (membership *Membership) EditMembershipOrder(id int, tenantid string) (orderlist TblMembershipOrder, err error) {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
@@ -85,7 +85,7 @@ func (membership *Membership) EditMembershipOrder(id, tenantid int) (orderlist T
 
 }
 
-func (membership *Membership) UpdateMembershipOrder(orders TblMembershipOrder, id, tenantid int) error {
+func (membership *Membership) UpdateMembershipOrder(orders TblMembershipOrder, id int, tenantid string) error {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
@@ -130,7 +130,7 @@ func (membership *Membership) UpdateMembershipOrder(orders TblMembershipOrder, i
 
 }
 
-func (membership *Membership) DeleteMembershipOrder(id, userid, tenantid int) error {
+func (membership *Membership) DeleteMembershipOrder(id, userid int, tenantid string) error {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 
@@ -152,7 +152,7 @@ func (membership *Membership) DeleteMembershipOrder(id, userid, tenantid int) er
 
 }
 
-func (membership *Membership) MultiSelectDeleteOrder(orderids []int, modifiedby int, tenantid int) error {
+func (membership *Membership) MultiSelectDeleteOrder(orderids []int, modifiedby int, tenantid string) error {
 
 	if Autherr := AuthandPermission(membership); Autherr != nil {
 

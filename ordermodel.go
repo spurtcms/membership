@@ -36,7 +36,7 @@ type TblMembershipOrder struct {
 	DeletedBy                 int       `gorm:"DEFAULT:NULL"`
 	ModifiedOn                time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	ModifiedBy                int       `gorm:"DEFAULT:NULL"`
-	TenantId                  int       `gorm:"type:integer"`
+	TenantId                  string    `gorm:"type:character varying"`
 }
 
 // Fetch datas
@@ -68,14 +68,14 @@ type TblMembershipOrders struct {
 	DeletedBy                 int       `gorm:"DEFAULT:NULL"`
 	ModifiedOn                time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	ModifiedBy                int       `gorm:"DEFAULT:NULL"`
-	TenantId                  int       `gorm:"type:integer"`
+	TenantId                  string    `gorm:"type:character varying"`
 	DateString                string    `gorm:"-"`
 	SubscriptionName          string    `gorm:"column:subscription_name"`
 	FirstName                 string    `gorm:"column:first_name"`
 	SubscriptionTransactionId string    `gorm:"column:subscription_transaction_id"`
 }
 
-func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, filter Filter, tenantid int, DB *gorm.DB) (orderlist []TblMembershipOrders, count int64, err error) {
+func (Membershipmodel MembershipModel) MemberShipOrderList(limit, offset int, filter Filter, tenantid string, DB *gorm.DB) (orderlist []TblMembershipOrders, count int64, err error) {
 
 	var orderlistcount int64
 
@@ -136,7 +136,7 @@ func (Membershipmodel MembershipModel) CreateMemberShipOrder(order TblMembership
 
 }
 
-func (Membershipmodel MembershipModel) Editorder(id, tenantid int, DB *gorm.DB) (orderlist TblMembershipOrder, err error) {
+func (Membershipmodel MembershipModel) Editorder(id int, tenantid string, DB *gorm.DB) (orderlist TblMembershipOrder, err error) {
 
 	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=? and is_deleted=0", id, tenantid).First(&orderlist).Error; err != nil {
 
@@ -147,7 +147,7 @@ func (Membershipmodel MembershipModel) Editorder(id, tenantid int, DB *gorm.DB) 
 
 }
 
-func (Membershipmodel MembershipModel) UpdateOrder(order TblMembershipOrder, id, tenantid int, DB *gorm.DB) error {
+func (Membershipmodel MembershipModel) UpdateOrder(order TblMembershipOrder, id int, tenantid string, DB *gorm.DB) error {
 
 	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=? and is_deleted=0", id, tenantid).UpdateColumns(map[string]interface{}{"user_id": order.UserId, "membershiplevel_id": order.MembershiplevelId, "billing_name": order.BillingName, "billing_street": order.BillingStreet, "billing_street2": order.BillingStreet2, "billing_city": order.BillingCity, "billing_state": order.BillingState, "billing_postalcode": order.BillingPostalcode, "billing_country": order.BillingCountry, "billing_phone": order.BillingPhone, "sub_total": order.SubTotal, "tax": order.Tax, "total": order.Total, "payment_type": order.PaymentType, "status": order.Status, "gateway": order.Gateway, "gateway_environment": order.GatewayEnvironment, "paymenttransaction_id": order.PaymenttransactionId, "subscriptiontransaction_id": order.SubscriptiontransactionId, "modified_on": order.ModifiedOn, "modified_by": order.ModifiedBy}).Error; err != nil {
 
@@ -158,7 +158,7 @@ func (Membershipmodel MembershipModel) UpdateOrder(order TblMembershipOrder, id,
 
 }
 
-func (Membershipmodel MembershipModel) DeleteOrder(id, tenantid, deletedby int, deletedon time.Time, DB *gorm.DB) error {
+func (Membershipmodel MembershipModel) DeleteOrder(id int, tenantid string, deletedby int, deletedon time.Time, DB *gorm.DB) error {
 
 	if err := DB.Table("tbl_membership_orders").Where("id=? and tenant_id=?", id, tenantid).UpdateColumns(map[string]interface{}{"is_deleted": 1, "deleted_by": deletedby, "deleted_on": deletedon}).Error; err != nil {
 

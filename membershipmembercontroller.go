@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId int) ([]TblMembershipMembers, int64) {
+func (Membership *Membership) MembershipListMembers(offset int, limt int, filter Filter, flag bool, TenantId string) ([]TblMembershipMembers, int64) {
 
 	var MembershipMemberList []TblMembershipMembers
 
@@ -24,7 +24,7 @@ func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember Tbl
 
 	uvuid := (uuid.New()).String()
 
-	customString := "M-"+uvuid[:5]
+	customString := "M-" + uvuid[:5]
 
 	var Createmember TblMembershipMembers
 	Createmember.Uuid = customString
@@ -99,7 +99,7 @@ func (Membership *Membership) DeleteMultiselectMember(memberids []int, userid in
 
 }
 
-func (Membership *Membership) ChangeMembershipStatus(membershipid int, status int, modifiedby int, tenantid int) (bool, error) {
+func (Membership *Membership) ChangeMembershipStatus(membershipid int, status int, modifiedby int, tenantid string) (bool, error) {
 	var membershipstatus TblMembershipMembers
 	membershipstatus.ModifiedBy = modifiedby
 	membershipstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -112,7 +112,7 @@ func (Membership *Membership) ChangeMembershipStatus(membershipid int, status in
 	return true, nil
 }
 
-func (Membership *Membership) CreateCheckOut(name string, mail string, pass string, phonenumber string, companyname string, position string, tenant int, createdby int) (bool, error) {
+func (Membership *Membership) CreateCheckOut(name string, mail string, pass string, phonenumber string, companyname string, position string, tenant string, createdby int) (bool, error) {
 
 	var checkoutdata TblMembershipMembers
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func (Membership *Membership) SubscriptionList(offset int, limt int, filter Filter, tenantid int) ([]TblMembershipSubcriptions, int64, error) {
+func (Membership *Membership) SubscriptionList(offset int, limt int, filter Filter, tenantid string) ([]TblMembershipSubcriptions, int64, error) {
 
 	var subscriptionlist []TblMembershipSubcriptions
 
@@ -17,7 +17,7 @@ func (Membership *Membership) SubscriptionList(offset int, limt int, filter Filt
 
 }
 
-func (membership *Membership) MembershipCreateSubscription(CreateSubscriptioninput TblMembershipSubcriptions, tenantid int, userid int) error {
+func (membership *Membership) MembershipCreateSubscription(CreateSubscriptioninput TblMembershipSubcriptions, tenantid string, userid int) error {
 	createdon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 	fmt.Println("")
@@ -41,7 +41,7 @@ func (membership *Membership) MembershipCreateSubscription(CreateSubscriptioninp
 
 }
 
-func (membership *Membership) SubscriptionEdit(SubscriptionId int, tenantid int) (TblMembershipSubcriptions, error) {
+func (membership *Membership) SubscriptionEdit(SubscriptionId int, tenantid string) (TblMembershipSubcriptions, error) {
 
 	var EditSubscription TblMembershipSubcriptions
 
@@ -51,7 +51,7 @@ func (membership *Membership) SubscriptionEdit(SubscriptionId int, tenantid int)
 
 }
 
-func (membership *Membership) SubscriptionUpdate(UpdateSubscriptioninput TblMembershipSubcriptions, userid int, tenantid int) error {
+func (membership *Membership) SubscriptionUpdate(UpdateSubscriptioninput TblMembershipSubcriptions, userid int, tenantid string) error {
 
 	ModifiedOn, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -71,7 +71,7 @@ func (membership *Membership) SubscriptionUpdate(UpdateSubscriptioninput TblMemb
 	return err
 }
 
-func (membership *Membership) SubscriptionsDelete(id, userid, tenantid int) error {
+func (membership *Membership) SubscriptionsDelete(id, userid int, tenantid string) error {
 
 	deletedon, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -83,7 +83,7 @@ func (membership *Membership) SubscriptionsDelete(id, userid, tenantid int) erro
 
 }
 
-func (Membership *Membership) ChangesSubscriptionIsactive(subscriptionid int, status int, modifiedby int, tenantid int) (bool, error) {
+func (Membership *Membership) ChangesSubscriptionIsactive(subscriptionid int, status int, modifiedby int, tenantid string) (bool, error) {
 
 	fmt.Println("reachh:2:")
 
@@ -98,8 +98,6 @@ func (Membership *Membership) ChangesSubscriptionIsactive(subscriptionid int, st
 
 	return true, nil
 }
-
-
 
 func (Membership *Membership) DeleteMultiSelectSubscription(SubscriptionIds []int, userid int) error {
 

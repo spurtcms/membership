@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func (memsership *Membership) MembershipGroupList(offset int, limt int, filter Filter, tenantid int, isactive int) ([]TblMstrMembergrouplevel, int64) {
+func (memsership *Membership) MembershipGroupList(offset int, limt int, filter Filter, tenantid string, isactive int) ([]TblMstrMembergrouplevel, int64) {
 	fmt.Println("")
 
 	var Subscriptiongroup []TblMstrMembergrouplevel
@@ -19,7 +19,7 @@ func (memsership *Membership) MembershipGroupList(offset int, limt int, filter F
 
 }
 
-func (membership *Membership) MembershipGroupLevelCreate(namae string, desc string, is_active int, tenantid int, userid int) {
+func (membership *Membership) MembershipGroupLevelCreate(namae string, desc string, is_active int, tenantid string, userid int) {
 
 	// createdOnStr := time.Now().UTC().Format("2006-01-02 15:04:05")
 
@@ -49,7 +49,7 @@ func (membership *Membership) MembershipGroupLevelEdit(MembershipGroupId int) Tb
 
 }
 
-func (membership *Membership) MembershipGrupUpdate(namae string, desc string, is_active int, tenantid int, userid int, id int) {
+func (membership *Membership) MembershipGrupUpdate(namae string, desc string, is_active int, tenantid string, userid int, id int) {
 
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -68,7 +68,7 @@ func (membership *Membership) MembershipGrupUpdate(namae string, desc string, is
 
 }
 
-func (Membership *Membership) MembershipGroupDelete(id int, userid int, tenantid int) {
+func (Membership *Membership) MembershipGroupDelete(id int, userid int, tenantid string) {
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
 	Groupupdate := TblMstrMembergrouplevel{
@@ -88,7 +88,7 @@ func (Membership *Membership) DeleteMultiselectMembershipGroup(MembershipGroupid
 
 }
 
-func (Membership *Membership) ChangeMembershipGroupStatus(membershipGroupid int, status int, modifiedby int, tenantid int) (bool, error) {
+func (Membership *Membership) ChangeMembershipGroupStatus(membershipGroupid int, status int, modifiedby int, tenantid string) (bool, error) {
 	var membershipGroupstatus TblMstrMembergrouplevel
 	membershipGroupstatus.ModifiedBy = modifiedby
 	membershipGroupstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))

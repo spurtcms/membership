@@ -22,7 +22,7 @@ func MembershipSetup(config Config) *Membership {
 
 }
 
-func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid int) ([]TblMstrMembershiplevel, int64, error) {
+func (Membership *Membership) MembershipLevelsList(offset int, limt int, filter Filter, tenantid string) ([]TblMstrMembershiplevel, int64, error) {
 
 	var subscriptionlist []TblMstrMembershiplevel
 
@@ -57,11 +57,11 @@ func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) ([]T
 
 }
 
-func (Membership *Membership) MembershiplevelEdit(membershipid int, tenantid int) (TblMstrMembershiplevel, error) {
+func (Membership *Membership) MembershiplevelEdit(membershipid int, tenantid string) (TblMstrMembershiplevel, error) {
 
 	var Editmembership TblMstrMembershiplevel
 
-	err := Membershipmodel.Editmembershiplevel(&Editmembership, membershipid,tenantid, Membership.DB)
+	err := Membershipmodel.Editmembershiplevel(&Editmembership, membershipid, tenantid, Membership.DB)
 
 	if err != nil {
 		return TblMstrMembershiplevel{}, err
@@ -71,7 +71,7 @@ func (Membership *Membership) MembershiplevelEdit(membershipid int, tenantid int
 
 }
 
-func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid int) error {
+func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid string) error {
 
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -103,7 +103,7 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 
 }
 
-func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid int) error {
+func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid string) error {
 	fmt.Println("")
 
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -137,7 +137,7 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 
 }
 
-func (Membership *Membership) SubscriptionDelete(tenantid int, id int, userid int) error {
+func (Membership *Membership) SubscriptionDelete(tenantid string, id int, userid int) error {
 
 	var subscriptionlist TblMstrMembershiplevel
 
@@ -170,7 +170,7 @@ func (Membership *Membership) DeleteMultiselectMembershipLevel(MembershipLevelid
 	return nil
 }
 
-func (Membership *Membership) ChangesMembershipLevelIsactive(membershiplevelid int, status int, modifiedby int, tenantid int) (bool, error) {
+func (Membership *Membership) ChangesMembershipLevelIsactive(membershiplevelid int, status int, modifiedby int, tenantid string) (bool, error) {
 	var membershiplevelstatus TblMstrMembershiplevel
 	membershiplevelstatus.ModifiedBy = modifiedby
 	membershiplevelstatus.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
