@@ -32,6 +32,7 @@ func (membership *Membership) MembershipCreateSubscription(CreateSubscriptioninp
 	CreateSubscription.TenantId = tenantid
 	CreateSubscription.CreatedOn = createdon
 	CreateSubscription.CreatedBy = userid
+	CreateSubscription.IsActive = 1
 
 	err := Membershipmodel.CreateMembershipSubscription(CreateSubscription, membership.DB)
 	if err != nil {
