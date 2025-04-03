@@ -79,6 +79,7 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 
 	subscriptiondata.SubscriptionName = sd.SubscriptionName
 	subscriptiondata.Description = sd.Description
+	subscriptiondata.MembershiplevelDetails = sd.MembershiplevelDetails
 	subscriptiondata.MembergroupLevelId = sd.MembergroupLevelId
 	subscriptiondata.InitialPayment = sd.InitialPayment
 	subscriptiondata.RecurrentSubscription = sd.RecurrentSubscription
@@ -112,6 +113,7 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 	Updatesubscription.Id = subscriptionNewdata.Id
 	Updatesubscription.SubscriptionName = subscriptionNewdata.SubscriptionName
 	Updatesubscription.Description = subscriptionNewdata.Description
+	Updatesubscription.MembershiplevelDetails = subscriptionNewdata.MembershiplevelDetails
 	Updatesubscription.MembergroupLevelId = subscriptionNewdata.MembergroupLevelId
 	Updatesubscription.InitialPayment = subscriptionNewdata.InitialPayment
 	Updatesubscription.RecurrentSubscription = subscriptionNewdata.RecurrentSubscription

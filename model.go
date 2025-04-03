@@ -21,28 +21,29 @@ type Filter struct {
 	Gateway       string
 }
 type TblMstrMembershiplevel struct {
-	Id                    int       `gorm:"primaryKey;auto_increment;type:serial"`
-	SubscriptionName      string    `gorm:"type:character varying"`
-	Description           string    `gorm:"type:character varying"`
-	MembergroupLevelId    int       `gorm:"type:integer"`
-	InitialPayment        float64   `gorm:"type:decimal(10,2)"`
-	RecurrentSubscription int       `gorm:"type:integer"`
-	BillingAmount         float64   `gorm:"type:decimal(10,2)"`
-	BillingfrequentValue  int       `gorm:"type:integer"`
-	BillingfrequentType   int       `gorm:"type:integer"`
-	BillingCyclelimit     int       `gorm:"type:integer"`
-	CustomTrial           int       `gorm:"type:integer"`
-	TrialBillingAmount    float64   `gorm:"type:decimal(10,2)"`
-	TrialBillingLimit     int       `gorm:"type:integer"`
-	CreatedOn             time.Time `gorm:"type:timestamp without time zone"`
-	CreatedBy             int       `gorm:"type:integer"`
-	ModifiedOn            time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
-	DeletedBy             int       `gorm:"DEFAULT:NULL"`
-	ModifiedBy            int       `gorm:"DEFAULT:NULL"`
-	IsDeleted             int       `gorm:"type:integer"`
-	IsActive              int       `gorm:"type:integer"`
-	DeletedOn             time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
-	TenantId              string    `gorm:"type:character varying"`
+	Id                     int       `gorm:"primaryKey;auto_increment;type:serial"`
+	SubscriptionName       string    `gorm:"type:character varying"`
+	Description            string    `gorm:"type:character varying"`
+	MembershiplevelDetails string    `gorm:"type:character varying"`
+	MembergroupLevelId     int       `gorm:"type:integer"`
+	InitialPayment         float64   `gorm:"type:decimal(10,2)"`
+	RecurrentSubscription  int       `gorm:"type:integer"`
+	BillingAmount          float64   `gorm:"type:decimal(10,2)"`
+	BillingfrequentValue   int       `gorm:"type:integer"`
+	BillingfrequentType    int       `gorm:"type:integer"`
+	BillingCyclelimit      int       `gorm:"type:integer"`
+	CustomTrial            int       `gorm:"type:integer"`
+	TrialBillingAmount     float64   `gorm:"type:decimal(10,2)"`
+	TrialBillingLimit      int       `gorm:"type:integer"`
+	CreatedOn              time.Time `gorm:"type:timestamp without time zone"`
+	CreatedBy              int       `gorm:"type:integer"`
+	ModifiedOn             time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
+	DeletedBy              int       `gorm:"DEFAULT:NULL"`
+	ModifiedBy             int       `gorm:"DEFAULT:NULL"`
+	IsDeleted              int       `gorm:"type:integer"`
+	IsActive               int       `gorm:"type:integer"`
+	DeletedOn              time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
+	TenantId               string    `gorm:"type:character varying"`
 }
 
 type TblMstrMembergrouplevel struct {
@@ -253,7 +254,7 @@ func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMs
 }
 
 func (membershipmodel MembershipModel) Subscriptionupdate(SubscriptionUpdate TblMstrMembershiplevel, tenantid string, DB *gorm.DB) error {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=?", SubscriptionUpdate.Id).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
+	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=?", SubscriptionUpdate.Id).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details":SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
 		return err
 	}
 	return nil
