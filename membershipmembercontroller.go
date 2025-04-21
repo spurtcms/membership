@@ -24,7 +24,7 @@ func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember Tbl
 
 	uvuid := (uuid.New()).String()
 
-	customString := "M-" + uvuid[:5]
+	customString := "M-" + uvuid[:8]
 
 	var Createmember TblMembershipMembers
 	Createmember.Uuid = customString
@@ -116,7 +116,9 @@ func (Membership *Membership) CreateCheckOut(name string, mail string, pass stri
 
 	var checkoutdata TblMembershipMembers
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
+	uvuid := (uuid.New()).String()
 
+	customString := "M-" + uvuid[:8]
 	checkoutdata.FirstName = name
 	checkoutdata.Username = name
 	checkoutdata.Email = mail
@@ -129,6 +131,7 @@ func (Membership *Membership) CreateCheckOut(name string, mail string, pass stri
 	checkoutdata.CreatedOn = time
 	checkoutdata.IsActive = 0
 	checkoutdata.CreatedBy = createdby
+	checkoutdata.Uuid = customString
 
 	_, err := Membershipmodel.CheckoutCreate(&checkoutdata, Membership.DB, companyname, position)
 	if err != nil {
