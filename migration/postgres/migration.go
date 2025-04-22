@@ -9,28 +9,33 @@ import (
 // Paid membership tables
 
 type TblMstrMembershiplevel struct {
-	Id                    int       `gorm:"primaryKey;auto_increment;type:serial"`
-	SubscriptionName      string    `gorm:"type:character varying"`
-	Description           string    `gorm:"type:character varying"`
-	MembergroupLevelId    int       `gorm:"type:integer"`
-	InitialPayment        float64   `gorm:"type:decimal(10,2)"`
-	RecurrentSubscription int       `gorm:"type:integer"`
-	BillingAmount         float64   `gorm:"type:decimal(10,2)"`
-	BillingfrequentValue  int       `gorm:"type:integer"`
-	BillingfrequentType   int       `gorm:"type:integer"`
-	BillingCyclelimit     int       `gorm:"type:integer"`
-	CustomTrial           int       `gorm:"type:integer"`
-	TrialBillingAmount    float64   `gorm:"type:decimal(10,2)"`
-	TrialBillingLimit     int       `gorm:"type:integer"`
-	CreatedOn             time.Time `gorm:"type:timestamp without time zone"`
-	CreatedBy             int       `gorm:"type:integer"`
-	ModifiedOn            time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
-	DeletedBy             int       `gorm:"DEFAULT:NULL"`
-	ModifiedBy            int       `gorm:"DEFAULT:NULL"`
-	IsDeleted             int       `gorm:"type:integer"`
-	IsActive              int       `gorm:"type:integer"`
-	DeletedOn             time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
-	TenantId              int       `gorm:"DEFAULT:NULL"`
+	Id                     int       `gorm:"primaryKey;auto_increment;type:serial"`
+	SubscriptionName       string    `gorm:"type:character varying"`
+	Description            string    `gorm:"type:character varying"`
+	MembershiplevelDetails string    `gorm:"type:character varying"`
+	MembergroupLevelId     int       `gorm:"type:integer"`
+	InitialPayment         float64   `gorm:"type:decimal(10,2)"`
+	IsDiscount             int       `gorm:"type:integer"`
+	DiscountPercentage     int       `gorm:"type:integer"`
+	DiscountedAmount       float64   `gorm:"type:decimal(10,2)"`
+	RecurrentSubscription  int       `gorm:"type:integer"`
+	BillingAmount          float64   `gorm:"type:decimal(10,2)"`
+	BillingfrequentValue   int       `gorm:"type:integer"`
+	BillingfrequentType    int       `gorm:"type:integer"`
+	BillingCyclelimit      int       `gorm:"type:integer"`
+	CustomTrial            int       `gorm:"type:integer"`
+	TrialBillingAmount     float64   `gorm:"type:decimal(10,2)"`
+	TrialBillingLimit      int       `gorm:"type:integer"`
+	CreatedOn              time.Time `gorm:"type:timestamp without time zone"`
+	CreatedBy              int       `gorm:"type:integer"`
+	ModifiedOn             time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
+	DeletedBy              int       `gorm:"DEFAULT:NULL"`
+	ModifiedBy             int       `gorm:"DEFAULT:NULL"`
+	IsDeleted              int       `gorm:"type:integer"`
+	IsActive               int       `gorm:"type:integer"`
+	DeletedOn              time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
+	TenantId               string    `gorm:"type:character varying"`
+	GroupName              string    `gorm:"-"`
 }
 
 type TblMstrMembergrouplevel struct {

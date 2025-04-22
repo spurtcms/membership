@@ -82,6 +82,9 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 	subscriptiondata.MembershiplevelDetails = sd.MembershiplevelDetails
 	subscriptiondata.MembergroupLevelId = sd.MembergroupLevelId
 	subscriptiondata.InitialPayment = sd.InitialPayment
+	subscriptiondata.IsDiscount = sd.IsDiscount
+	subscriptiondata.DiscountPercentage = sd.DiscountPercentage
+	subscriptiondata.DiscountedAmount = sd.DiscountedAmount
 	subscriptiondata.RecurrentSubscription = sd.RecurrentSubscription
 	subscriptiondata.BillingAmount = sd.BillingAmount
 	subscriptiondata.BillingfrequentValue = sd.BillingfrequentValue
@@ -116,6 +119,9 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 	Updatesubscription.MembershiplevelDetails = subscriptionNewdata.MembershiplevelDetails
 	Updatesubscription.MembergroupLevelId = subscriptionNewdata.MembergroupLevelId
 	Updatesubscription.InitialPayment = subscriptionNewdata.InitialPayment
+	Updatesubscription.IsDiscount=subscriptionNewdata.IsDiscount
+	Updatesubscription.DiscountPercentage=subscriptionNewdata.DiscountPercentage
+	Updatesubscription.DiscountedAmount=subscriptionNewdata.DiscountedAmount
 	Updatesubscription.RecurrentSubscription = subscriptionNewdata.RecurrentSubscription
 	Updatesubscription.BillingAmount = subscriptionNewdata.BillingAmount
 	Updatesubscription.BillingfrequentValue = subscriptionNewdata.BillingfrequentValue
