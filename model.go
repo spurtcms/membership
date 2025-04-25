@@ -48,8 +48,7 @@ type TblMstrMembershiplevel struct {
 	DeletedOn              time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	TenantId               string    `gorm:"type:character varying"`
 	GroupName              string    `gorm:"<-:false"`
-	GroupId              string    `gorm:"<-:false"`
-
+	GroupId                int       `gorm:"<-:false"`
 }
 
 type TblMstrMembergrouplevel struct {
@@ -252,23 +251,23 @@ func (membershipmodel MembershipModel) GetMembershiplevelDetails(SelectedMembers
 	return nil
 }
 
-// func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMstrMembershiplevel, Id int, tenantid string, DB *gorm.DB) error {
-// 	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where("is_deleted=0 and tenant_id=? and id=?", tenantid, Id).First(&Editmembership).Error; err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
-
 func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMstrMembershiplevel, Id int, tenantid string, DB *gorm.DB) error {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().
-		Select("tbl_mstr_membershiplevels.*, tbl_mstr_membergrouplevels.group_name as group_name ,tbl_mstr_membergrouplevels.id as group_id").
-		Joins("inner join tbl_mstr_membergrouplevels on tbl_mstr_membershiplevels.membergroup_level_id  = tbl_mstr_membergrouplevels.id").
-		Where("tbl_mstr_membershiplevels.is_deleted = 0 and tbl_mstr_membershiplevels.tenant_id = ? and tbl_mstr_membershiplevels.id = ?", tenantid, Id).
-		First(&Editmembership).Error; err != nil {
+	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where("is_deleted=0 and tenant_id=? and id=?", tenantid, Id).First(&Editmembership).Error; err != nil {
 		return err
 	}
 	return nil
 }
+
+// func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMstrMembershiplevel, Id int, tenantid string, DB *gorm.DB) error {
+// 	if err := DB.Table("tbl_mstr_membershiplevels").Debug().
+// 		Select("tbl_mstr_membershiplevels.*, tbl_mstr_membergrouplevels.group_name as group_name ,tbl_mstr_membergrouplevels.id as group_id").
+// 		Joins("inner join tbl_mstr_membergrouplevels on tbl_mstr_membershiplevels.membergroup_level_id  = tbl_mstr_membergrouplevels.id").
+// 		Where("tbl_mstr_membershiplevels.is_deleted = 0 and tbl_mstr_membershiplevels.tenant_id = ? and tbl_mstr_membershiplevels.id = ?", tenantid, Id).
+// 		First(&Editmembership).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (membershipmodel MembershipModel) Subscriptionupdate(SubscriptionUpdate TblMstrMembershiplevel, tenantid string, DB *gorm.DB) error {
 	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=?", SubscriptionUpdate.Id).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details": SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "is_discount": SubscriptionUpdate.IsDiscount, "discount_percentage": SubscriptionUpdate.DiscountPercentage, "discounted_amount": SubscriptionUpdate.DiscountedAmount, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
