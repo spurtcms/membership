@@ -112,7 +112,7 @@ func (Membership *Membership) ChangeMembershipStatus(membershipid int, status in
 	return true, nil
 }
 
-func (Membership *Membership) CreateCheckOut(name string, mail string, pass string, phonenumber string, companyname string, position string, tenant string, createdby int) (bool, error) {
+func (Membership *Membership) CreateCheckOut(name string, mail string, pass string, phonenumber string, companyname string, position string, tenant string, createdby int) (int, error) {
 
 	var checkoutdata TblMembershipMembers
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -136,8 +136,25 @@ func (Membership *Membership) CreateCheckOut(name string, mail string, pass stri
 	_, err := Membershipmodel.CheckoutCreate(&checkoutdata, Membership.DB, companyname, position)
 	if err != nil {
 		fmt.Println(err)
-		return false, err
+		return 0, err
 	}
-	return true, nil
+	return checkoutdata.Id, nil
 
 }
+func (Membership *Membership) CheckEmailInMembers(email string) (bool, TblMembershipMembers, error) {
+	var MemberExsit TblMembershipMembers
+
+	err := Membershipmodel.MembersEmailCheck(&MemberExsit, email, Membership.DB)
+	if err != nil {
+		fmt.Println("Error checking email:", err)
+		return true, TblMembershipMembers{}, err
+	}
+
+	if MemberExsit.Email == "" {
+		return true, TblMembershipMembers{}, nil
+	}
+
+	return false, MemberExsit, nil
+}
+
+
