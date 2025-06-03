@@ -20,6 +20,71 @@ go get github.com/spurtcms/membership
 # Usage Example
 
 
+``` bash
+import (
+	"github.com/spurtcms/auth"
+	"github.com/spurtcms/membership"
+)
+
+func main() {
+
+	Auth := auth.AuthSetup(auth.Config{
+		UserId:     1,
+		ExpiryTime: 2,
+		SecretKey:  "SecretKey@123",
+		DB:         &gorm.DB{},
+		RoleId:     1,
+	})
+
+	token, _ := Auth.CreateToken()
+
+	Auth.VerifyToken(token, SecretKey)
+
+	permisison, _ := Auth.IsGranted("Courses", auth.CRUD)
+
+	MembershipConfig = memship.MembershipSetup(memship.Config{
+		DB:               DB,
+		AuthEnable:       true,
+		PermissionEnable: false,
+		Auth:             NewAuth,
+	})
+
+	//Membership
+	if permisison {
+
+		//list Members
+		MembershipMemberList, TolatmemberCount := MembershipConfig.MembershipListMembers(0, 10, memship.Filter(filter), 1, 1)
+
+		//list MembershipLevel Group
+		subscriptiongroup, TotalGroupcount := MembershipConfig.MembershipGroupList(offset, limt, memship.Filter(filter), TenantId, 0)
+		fmt.Println("")
+
+		//list MembershipLevel
+		MembershiplevelLists, _, _ := MembershipConfig.MembershipLevelsList(0, 10, memship.Filter{}, 1)
+
+		if err != nil {
+			log.Fatal("membership level list error", err)
+			c.AbortWithError(500, err)
+		}
+
+		//list Subscription
+		SubscriptionList, SubscriptioCount, err := MembershipConfig.SubscriptionList(offset, limt, memship.Filter(filter), TenantId)
+
+		if err != nil {
+			log.Fatal("Subscription List Error :", err)
+			c.AbortWithError(500, err)
+		}
+
+		//list Orders
+		orderlist, count, err := MembershipConfig.OrderList(limt, offset, filter, TenantId)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	}
+}
+
+```
 
 
 # Getting help
