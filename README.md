@@ -40,7 +40,7 @@ func main() {
 
 	Auth.VerifyToken(token, SecretKey)
 
-	permisison, _ := Auth.IsGranted("Courses", auth.CRUD)
+	permisison, _ := Auth.IsGranted("Membership", auth.CRUD)
 
 	MembershipConfig = memship.MembershipSetup(memship.Config{
 		DB:               DB,
