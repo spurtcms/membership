@@ -207,8 +207,8 @@ func (Membershipmodel MembershipModel) CheckoutCreate(Checkout *TblMembershipMem
 }
 
 func (Membershipmodel MembershipModel) MembersEmailCheck(MemberExsit *TblMembershipMembers, email string, DB *gorm.DB) error {
-	if err := DB.Table("tbl_membership_members").Where("email = ?", email).First(&MemberExsit).Error; err != nil {
-		return err 
+	if err := DB.Table("tbl_membership_members").Where("email = ? and is_deleted=0", email).First(&MemberExsit).Error; err != nil {
+		return err
 	}
 
 	return nil
