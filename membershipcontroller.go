@@ -43,6 +43,7 @@ func (Membership *Membership) GetdefaultMembershiplevelTemplate() []TblMstrMembe
 	return DefaultMembershipLevelList
 
 }
+
 func (Membership *Membership) MembershiplevelDetails(membershiplevelId int) ([]TblMstrMembershiplevel, error) {
 
 	var SelectedMembershipData []TblMstrMembershiplevel

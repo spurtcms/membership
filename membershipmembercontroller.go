@@ -45,6 +45,8 @@ func (Membership *Membership) CreateMembershipMembers(CreateMembershipMember Tbl
 	Createmember.CreatedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 	Createmember.StorageType = CreateMembershipMember.StorageType
 	Createmember.TenantId = CreateMembershipMember.TenantId
+	Createmember.Location = CreateMembershipMember.Location
+	Createmember.Bio = CreateMembershipMember.Bio
 	err := Membershipmodel.MemberCreateMembership(&Createmember, Membership.DB)
 
 	fmt.Println("err", err)
@@ -64,8 +66,8 @@ func (Membership *Membership) EditMembershipMember(MemberId int) TblMembershipMe
 func (Membership *Membership) UpdateMembershipMember(updatedMember TblMembershipMembers) {
 
 	var MemberUpdate TblMembershipMembers
-	// MemberUpdate.ProfileImage = updatedMember.ProfileImage
-	// MemberUpdate.ProfileImagePath = updatedMember.ProfileImagePath
+	MemberUpdate.ProfileImage = updatedMember.ProfileImage
+	MemberUpdate.ProfileImagePath = updatedMember.ProfileImagePath
 	MemberUpdate.Id = updatedMember.Id
 	MemberUpdate.FirstName = updatedMember.FirstName
 	MemberUpdate.LastName = updatedMember.LastName
@@ -78,7 +80,8 @@ func (Membership *Membership) UpdateMembershipMember(updatedMember TblMembership
 	MemberUpdate.ModifiedOn, _ = time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 	MemberUpdate.StorageType = updatedMember.StorageType
 	MemberUpdate.TenantId = updatedMember.TenantId
-
+	MemberUpdate.Location = updatedMember.Location
+	MemberUpdate.Bio = updatedMember.Bio
 	Membershipmodel.MembershipUpdateMember(MemberUpdate, Membership.DB)
 
 }
@@ -156,5 +159,3 @@ func (Membership *Membership) CheckEmailInMembers(email string) (bool, TblMember
 
 	return false, MemberExsit, nil
 }
-
-

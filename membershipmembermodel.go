@@ -41,6 +41,8 @@ type TblMembershipMembers struct {
 	PlanDuration     int       `gorm:"<-:false"`
 	MultiplyDuration int       `gorm:"<-:false"`
 	EndDate          time.Time `gorm:"<-:false"`
+	Location         string    `gorm:"type:character varying"`
+	Bio              string    `gorm:"type:text"`
 }
 
 type TblMembershipCompanyInfo struct {
