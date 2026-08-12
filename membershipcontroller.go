@@ -95,6 +95,7 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 	subscriptiondata.CreatedOn = t
 	subscriptiondata.TenantId = tenantid
 	subscriptiondata.IsActive = sd.IsActive
+	subscriptiondata.CreditScore = sd.CreditScore
 
 	err := Membershipmodel.CreateSubscriptionLevel(subscriptiondata, Membership.DB)
 
@@ -133,6 +134,7 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 	Updatesubscription.TrialBillingLimit = subscriptionNewdata.TrialBillingLimit
 	Updatesubscription.IsActive = subscriptionNewdata.IsActive
 	Updatesubscription.ModifiedOn = time
+	Updatesubscription.CreditScore = subscriptionNewdata.CreditScore
 
 	err := Membershipmodel.Subscriptionupdate(Updatesubscription, tenantid, Membership.DB)
 

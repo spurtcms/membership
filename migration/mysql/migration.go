@@ -32,6 +32,7 @@ type TblMstrMembershiplevel struct {
 	IsActive              int       `gorm:"type:int"`
 	DeletedOn             time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
 	TenantId              int       `gorm:"DEFAULT:NULL"`
+	CreditScore           int       `gorm:"type:int"`
 }
 
 type TblMstrMembergrouplevel struct {
@@ -68,11 +69,40 @@ type MemberCheckoutDetails struct {
 	TenantId    int       `gorm:"type:int;DEFAULT:NULL"`
 }
 
+type TblMembershipMembers struct {
+	Id               int       `gorm:"primaryKey;auto_increment;type:int"`
+	Uuid             string    `gorm:"type:varchar(255)"`
+	FirstName        string    `gorm:"type:varchar(255)"`
+	LastName         string    `gorm:"type:varchar(255)"`
+	Email            string    `gorm:"type:varchar(255)"`
+	MobileNo         string    `gorm:"type:varchar(255)"`
+	IsActive         int       `gorm:"type:int"`
+	ProfileImage     string    `gorm:"type:varchar(255)"`
+	ProfileImagePath string    `gorm:"type:varchar(255)"`
+	LastLogin        int       `gorm:"type:int"`
+	Password         string    `gorm:"type:varchar(255)"`
+	Username         string    `gorm:"DEFAULT:NULL"`
+	Otp              int       `gorm:"DEFAULT:NULL"`
+	OtpExpiry        time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
+	LoginTime        time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
+	IsDeleted        int       `gorm:"type:int"`
+	DeletedOn        time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
+	DeletedBy        int       `gorm:"DEFAULT:NULL"`
+	CreatedOn        time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
+	CreatedBy        int       `gorm:"type:int"`
+	ModifiedOn       time.Time `gorm:"type:timestamp;DEFAULT:NULL"`
+	ModifiedBy       int       `gorm:"DEFAULT:NULL"`
+	StorageType      string    `gorm:"type:varchar(255)"`
+	TenantId         string    `gorm:"type:varchar(255)"`
+	Location         string    `gorm:"type:varchar(255)"`
+	Bio              string    `gorm:"type:text"`
+}
+
 
 // MigrateTable creates this package related tables in your database
 
 func MigrateTables(db *gorm.DB) {
 
-	db.AutoMigrate(&TblMstrMembershiplevel{}, &TblMstrMembergrouplevel{}, &MemberCheckoutDetails{})
+	db.AutoMigrate(&TblMstrMembershiplevel{}, &TblMstrMembergrouplevel{}, &MemberCheckoutDetails{}, &TblMembershipMembers{})
 
 }

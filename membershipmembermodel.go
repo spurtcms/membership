@@ -157,7 +157,7 @@ func (Membershipmodel MembershipModel) MembershipEditMember(MembershipMember *Tb
 }
 
 func (Membershipmodel MembershipModel) MembershipUpdateMember(UpdatedMember TblMembershipMembers, DB *gorm.DB) error {
-	if err := DB.Table("tbl_membership_members").Debug().Where(" id=?", UpdatedMember.Id).UpdateColumns(map[string]interface{}{"first_name": UpdatedMember.FirstName, "last_name": UpdatedMember.LastName, "email": UpdatedMember.Email, "mobile_no": UpdatedMember.MobileNo, "is_active": UpdatedMember.IsActive, "password": UpdatedMember.Password, "username": UpdatedMember.Username, "modified_on": UpdatedMember.ModifiedOn, "modified_by": UpdatedMember.ModifiedBy}).Error; err != nil {
+	if err := DB.Table("tbl_membership_members").Debug().Where(" id=?", UpdatedMember.Id).UpdateColumns(map[string]interface{}{"first_name": UpdatedMember.FirstName, "last_name": UpdatedMember.LastName, "email": UpdatedMember.Email, "mobile_no": UpdatedMember.MobileNo, "is_active": UpdatedMember.IsActive, "profile_image": UpdatedMember.ProfileImage, "profile_image_path": UpdatedMember.ProfileImagePath, "password": UpdatedMember.Password, "username": UpdatedMember.Username, "modified_on": UpdatedMember.ModifiedOn, "modified_by": UpdatedMember.ModifiedBy, "location": UpdatedMember.Location, "bio": UpdatedMember.Bio}).Error; err != nil {
 		return err
 	}
 	return nil

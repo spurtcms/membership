@@ -47,6 +47,7 @@ type TblMstrMembershiplevel struct {
 	IsActive               int       `gorm:"type:integer"`
 	DeletedOn              time.Time `gorm:"type:timestamp without time zone;DEFAULT:NULL"`
 	TenantId               string    `gorm:"type:character varying"`
+	CreditScore            int       `gorm:"type:integer"`
 	GroupName              string    `gorm:"<-:false"`
 	GroupId                int       `gorm:"<-:false"`
 }
@@ -270,7 +271,7 @@ func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMs
 // }
 
 func (membershipmodel MembershipModel) Subscriptionupdate(SubscriptionUpdate TblMstrMembershiplevel, tenantid string, DB *gorm.DB) error {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=?", SubscriptionUpdate.Id).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details": SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "is_discount": SubscriptionUpdate.IsDiscount, "discount_percentage": SubscriptionUpdate.DiscountPercentage, "discounted_amount": SubscriptionUpdate.DiscountedAmount, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
+	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=?", SubscriptionUpdate.Id).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details": SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "is_discount": SubscriptionUpdate.IsDiscount, "discount_percentage": SubscriptionUpdate.DiscountPercentage, "discounted_amount": SubscriptionUpdate.DiscountedAmount, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "creditscore": SubscriptionUpdate.CreditScore, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
 		return err
 	}
 	return nil
