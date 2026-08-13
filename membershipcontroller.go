@@ -71,7 +71,7 @@ func (Membership *Membership) MembershiplevelEdit(membershipid int, tenantid str
 
 }
 
-func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid string) error {
+func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, tenantid string) (TblMstrMembershiplevel, error) {
 
 	t, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
 
@@ -97,18 +97,18 @@ func (Membership *Membership) MembershipLevelsCreate(sd TblMstrMembershiplevel, 
 	subscriptiondata.IsActive = sd.IsActive
 	subscriptiondata.CreditScore = sd.CreditScore
 
-	err := Membershipmodel.CreateSubscriptionLevel(subscriptiondata, Membership.DB)
+	createddata, err := Membershipmodel.CreateSubscriptionLevel(subscriptiondata, Membership.DB)
 
 	if err != nil {
 
-		return err
+		return TblMstrMembershiplevel{}, err
 	}
 
-	return nil
+	return createddata, nil
 
 }
 
-func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid string) error {
+func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMembershiplevel, tenantid string) (TblMstrMembershiplevel, error) {
 	fmt.Println("")
 
 	time, _ := time.Parse("2006-01-02 15:04:05", time.Now().UTC().Format("2006-01-02 15:04:05"))
@@ -136,14 +136,14 @@ func (Membership *Membership) UpdateSubscription(subscriptionNewdata TblMstrMemb
 	Updatesubscription.ModifiedOn = time
 	Updatesubscription.CreditScore = subscriptionNewdata.CreditScore
 
-	err := Membershipmodel.Subscriptionupdate(Updatesubscription, tenantid, Membership.DB)
+	updatedData, err := Membershipmodel.Subscriptionupdate(Updatesubscription, tenantid, Membership.DB)
 
 	if err != nil {
 
-		return err
+		return TblMstrMembershiplevel{}, err
 	}
 
-	return nil
+	return updatedData, nil
 
 }
 
