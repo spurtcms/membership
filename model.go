@@ -216,11 +216,13 @@ func (membershipmodel MembershipModel) GetMembershipLevel(offset int, limit int,
 		query = query.Where("LOWER(TRIM(subscription_name)) LIKE LOWER(TRIM(?))", "%"+filter.Keyword+"%")
 
 	}
+
 	if filter.Level != "" {
 
 		query = query.Where("LOWER(TRIM(tbl_mstr_membershiplevels.subscription_name)) like LOWER(TRIM(?))", "%"+filter.Level+"%")
 
 	}
+
 	if filter.FromDate != "" {
 		query = query.Where("tbl_mstr_membershiplevels.created_on >= ? AND tbl_mstr_membershiplevels.created_on < ?",
 			filter.FromDate+" 00:00:00",
@@ -270,8 +272,9 @@ func (membershipmodel MembershipModel) Editmembershiplevel(Editmembership *TblMs
 // 	return nil
 // }
 
+
 func (membershipmodel MembershipModel) Subscriptionupdate(SubscriptionUpdate TblMstrMembershiplevel, tenantid string, DB *gorm.DB) (TblMstrMembershiplevel, error) {
-	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=? AND tenant_id = ?", SubscriptionUpdate.Id, tenantid).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details": SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "is_discount": SubscriptionUpdate.IsDiscount, "discount_percentage": SubscriptionUpdate.DiscountPercentage, "discounted_amount": SubscriptionUpdate.DiscountedAmount, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "creditscore": SubscriptionUpdate.CreditScore, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
+	if err := DB.Table("tbl_mstr_membershiplevels").Debug().Where(" id=? AND tenant_id = ?", SubscriptionUpdate.Id, tenantid).UpdateColumns(map[string]interface{}{"subscription_name": SubscriptionUpdate.SubscriptionName, "description": SubscriptionUpdate.Description, "membershiplevel_details": SubscriptionUpdate.MembershiplevelDetails, "membergroup_level_id": SubscriptionUpdate.MembergroupLevelId, "initial_payment": SubscriptionUpdate.InitialPayment, "is_discount": SubscriptionUpdate.IsDiscount, "discount_percentage": SubscriptionUpdate.DiscountPercentage, "discounted_amount": SubscriptionUpdate.DiscountedAmount, "recurrent_subscription": SubscriptionUpdate.RecurrentSubscription, "billing_amount": SubscriptionUpdate.BillingAmount, "billingfrequent_value": SubscriptionUpdate.BillingfrequentValue, "billingfrequent_type": SubscriptionUpdate.BillingfrequentType, "billing_cyclelimit": SubscriptionUpdate.BillingCyclelimit, "custom_trial": SubscriptionUpdate.CustomTrial, "trial_billing_amount": SubscriptionUpdate.TrialBillingAmount, "trial_billing_limit": SubscriptionUpdate.TrialBillingLimit, "credit_score": SubscriptionUpdate.CreditScore, "modified_on": SubscriptionUpdate.ModifiedOn, "modified_by": SubscriptionUpdate.ModifiedBy}).Error; err != nil {
 		return TblMstrMembershiplevel{}, err
 	}
 
@@ -281,6 +284,7 @@ func (membershipmodel MembershipModel) Subscriptionupdate(SubscriptionUpdate Tbl
 	// }
 
 	return SubscriptionUpdate, nil
+
 }
 
 func (membershipmodel MembershipModel) DeleteSubscription(SubscriptionDelete *TblMstrMembershiplevel, id int, DB *gorm.DB) error {
